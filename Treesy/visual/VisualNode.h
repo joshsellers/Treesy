@@ -1,0 +1,55 @@
+// Copyright (c) 2025 Josh Sellers
+// Licensed under the MIT License. See LICENSE file.
+
+#ifndef _VISUAL_NODE_H
+#define _VISUAL_NODE_H
+
+#include <string>
+#include <vector>
+#include "../../PennyEngine/ui/components/TextField.h"
+#include <SFML/Graphics/RenderTexture.hpp>
+#include "../../PennyEngine/core/Defines.h"
+
+class VisualNode : public pe::TextField {
+public:
+    VisualNode(VisualNode* parent, float x, float y);
+
+    void tick();
+    void visualize(sf::RenderTexture& surface);
+
+    sf::Vector2f getPosition() const;
+
+    std::vector<s_p<VisualNode>>& getChildren();
+    VisualNode* getParent();
+
+    bool hasChildren();
+    bool hasParent() const;
+
+    bool isHovered() const;
+
+    virtual void mouseButtonPressed(const int mx, const int my, const int button);
+    virtual void mouseButtonReleased(const int mx, const int my, const int button);
+    virtual void mouseMoved(const int mx, const int my);
+    virtual void textEntered(const sf::Uint32 character); 
+    
+    virtual bool hasMousePriority() const;
+protected:
+    virtual void update();
+    virtual void draw(sf::RenderTexture& surface); 
+private:
+    std::vector<s_p<VisualNode>> _children;
+
+    void addChild();
+
+    VisualNode* _parent = nullptr;
+
+    bool _hideInterface = true;
+
+    void connectToParent(sf::RenderTexture& surface);
+
+    sf::RectangleShape _plusButton;
+    sf::RectangleShape _minusButton;
+    bool _clickingButtons = false;
+};
+
+#endif

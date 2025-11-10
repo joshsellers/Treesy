@@ -1,0 +1,424 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Treesy\core\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PennyEngine\core\EngineInstance.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PennyEngine\core\GameManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PennyEngine\core\Util.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PennyEngine\input\gamepad\Gamepad.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PennyEngine\input\InputEventDistributor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PennyEngine\ui\components\Button.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PennyEngine\ui\components\MenuComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PennyEngine\ui\components\Panel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PennyEngine\ui\components\Slider.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PennyEngine\ui\components\SliderHandle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PennyEngine\ui\components\TextField.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PennyEngine\ui\Menu.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PennyEngine\ui\UI.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PennyEngine\ui\UIManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PennyEngine\PennyEngine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soloud\audiosource\monotone\soloud_monotone.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soloud\audiosource\noise\soloud_noise.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soloud\audiosource\openmpt\soloud_openmpt.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soloud\audiosource\openmpt\soloud_openmpt_dll.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soloud\audiosource\sfxr\soloud_sfxr.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soloud\audiosource\speech\darray.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soloud\audiosource\speech\klatt.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soloud\audiosource\speech\resonator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soloud\audiosource\speech\soloud_speech.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soloud\audiosource\speech\tts.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soloud\audiosource\vic\soloud_vic.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soloud\audiosource\vizsn\soloud_vizsn.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soloud\audiosource\wav\dr_impl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soloud\audiosource\wav\soloud_wav.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soloud\audiosource\wav\soloud_wavstream.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soloud\audiosource\wav\stb_vorbis.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soloud\backend\alsa\soloud_alsa.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soloud\backend\coreaudio\soloud_coreaudio.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soloud\backend\jack\soloud_jack.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soloud\backend\miniaudio\soloud_miniaudio.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soloud\backend\nosound\soloud_nosound.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soloud\backend\null\soloud_null.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soloud\backend\openal\soloud_openal.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soloud\backend\openal\soloud_openal_dll.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soloud\backend\opensles\soloud_opensles.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soloud\backend\oss\soloud_oss.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soloud\backend\portaudio\soloud_portaudio.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soloud\backend\portaudio\soloud_portaudio_dll.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soloud\backend\sdl\soloud_sdl1.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soloud\backend\sdl\soloud_sdl1_dll.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soloud\backend\sdl\soloud_sdl2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soloud\backend\sdl\soloud_sdl2_dll.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soloud\backend\sdl_static\soloud_sdl_static.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soloud\backend\sdl2_static\soloud_sdl2_static.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soloud\backend\vita_homebrew\soloud_vita_homebrew.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soloud\backend\wasapi\soloud_wasapi.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soloud\backend\winmm\soloud_winmm.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soloud\backend\xaudio2\soloud_xaudio2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soloud\core\soloud.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soloud\core\soloud_audiosource.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soloud\core\soloud_bus.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soloud\core\soloud_core_3d.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soloud\core\soloud_core_basicops.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soloud\core\soloud_core_faderops.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soloud\core\soloud_core_filterops.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soloud\core\soloud_core_getters.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soloud\core\soloud_core_setters.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soloud\core\soloud_core_voicegroup.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soloud\core\soloud_core_voiceops.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soloud\core\soloud_fader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soloud\core\soloud_fft.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soloud\core\soloud_fft_lut.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soloud\core\soloud_file.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soloud\core\soloud_filter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soloud\core\soloud_misc.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soloud\core\soloud_queue.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soloud\core\soloud_thread.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soloud\filter\soloud_bassboostfilter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soloud\filter\soloud_biquadresonantfilter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soloud\filter\soloud_dcremovalfilter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soloud\filter\soloud_echofilter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soloud\filter\soloud_fftfilter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soloud\filter\soloud_flangerfilter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soloud\filter\soloud_freeverbfilter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soloud\filter\soloud_lofifilter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soloud\filter\soloud_robotizefilter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soloud\filter\soloud_waveshaperfilter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Treesy\core\ProgramManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Treesy\tree\Node.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Treesy\tree\Tree.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Treesy\visual\VisualNode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Treesy\visual\VisualTree.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Treesy.licenseheader" />
+    <None Include="soloud\audiosource\speech\Elements.def">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="cpp.hint" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="PennyEngine\audio\SoundManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PennyEngine\core\Defines.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PennyEngine\core\EngineInstance.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PennyEngine\core\GameManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PennyEngine\core\Logger.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PennyEngine\core\Resolution.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PennyEngine\core\Util.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PennyEngine\input\gamepad\Gamepad.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PennyEngine\input\gamepad\GamepadButtons.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PennyEngine\input\gamepad\GamepadListener.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PennyEngine\input\InputEventDistributor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PennyEngine\input\InputListener.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PennyEngine\input\KeyListener.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PennyEngine\input\MouseListener.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PennyEngine\ui\components\AppearanceConfigs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PennyEngine\ui\components\Button.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PennyEngine\ui\components\ButtonListener.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PennyEngine\ui\components\ComponentAppearanceConfig.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PennyEngine\ui\components\MenuComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PennyEngine\ui\components\Panel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PennyEngine\ui\components\Slider.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PennyEngine\ui\components\SliderHandle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PennyEngine\ui\components\SliderListener.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PennyEngine\ui\components\TextField.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PennyEngine\ui\Menu.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PennyEngine\ui\UI.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PennyEngine\ui\UIManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PennyEngine\PennyEngine.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="soloud\audiosource\speech\darray.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="soloud\audiosource\speech\klatt.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="soloud\audiosource\speech\resonator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="soloud\audiosource\speech\tts.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="soloud\audiosource\wav\dr_flac.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="soloud\audiosource\wav\dr_mp3.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="soloud\audiosource\wav\dr_wav.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="soloud\audiosource\wav\stb_vorbis.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="soloud\backend\miniaudio\miniaudio.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Treesy\core\ProgramManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Treesy\tree\Node.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Treesy\tree\Tree.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Treesy\visual\VisualNode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Treesy\visual\VisualTree.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Treesy\visual\Line.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Treesy\core\Settings.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

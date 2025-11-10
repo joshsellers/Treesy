@@ -1,0 +1,151 @@
+// Copyright (c) 2025 Josh Sellers
+// Licensed under the MIT License. See LICENSE file.
+
+#ifndef _SOUND_MANAGER_H
+#define _SOUND_MANAGER_H
+
+#include <map>
+#include "../core/Logger.h"
+#include "soloud.h"
+#include "soloud_wav.h"
+
+namespace pe {
+    class SoundManager {
+    public:
+        static void playSound(std::string soundName) {
+            if (sounds.find(soundName) == sounds.end()) {
+                Logger::log("No sound named \"" + soundName + "\"");
+                return;
+            }
+            soloud.play(sounds[soundName]);
+        }
+
+        static void setVolume(std::string soundName, float volume) {
+            sounds[soundName].setVolume(volume);
+        }
+
+        static void playSong(std::string musicName, bool loop = true) {
+            stopMusic();
+            music[musicName].setLooping(loop);
+            _currentSong = soloud.play(music[musicName]);
+            _songLength = music[musicName].getLength();
+            _songIsPlaying = true;
+            _songStartTimeMillis = currentTimeMillis();
+        }
+
+        static bool musicIsPlaying() {
+            if (soloud.getLooping(_currentSong)) {
+                return _songIsPlaying;
+            } else {
+                return (double)currentTimeMillis() / 1000. - (double)_songStartTimeMillis / 1000. < _songLength;
+            }
+        }
+
+        static void stopSong(std::string songName) {
+            music[songName].stop();
+            _songIsPlaying = false;
+        }
+
+        static void stopMusic() {
+            for (const auto& songName : musicNames) {
+                stopSong(songName);
+            }
+        }
+
+        static void setSongVolume(std::string songName, float volume) {
+            music[songName].setVolume(volume);
+        }
+
+        static void setMusicVolume(float volume) {
+            for (auto& song : music) {
+                song.second.setVolume(volume);
+            }
+
+            if (_songIsPlaying) {
+                soloud.setVolume(_currentSong, volume);
+            }
+        }
+
+        static void setSfxVolume(float volume) {
+            for (auto& sound : sounds) {
+                sound.second.setVolume(volume);
+            }
+        }
+
+        static void loadSounds() {
+            const SoLoud::result result = soloud.init();
+            if (result != 0) {
+                Logger::log("There was an error initiating the audio engine\nAborting audio init\n\nSounds will not be loaded.\nTry changing your audio device and restarting the game.");
+                Logger::log("Error code: " + std::to_string(result));
+                soloud.deinit();
+                _failedInit = true;
+                return;
+            }
+
+            const std::string dirName = "res/sounds";
+            std::vector<std::string> soundFiles;
+            for (const auto& entry : std::filesystem::directory_iterator(dirName)) {
+                if (splitString(splitString(entry.path().string(), "\\")[1], ".").size() != 2) continue;
+                else if (splitString(splitString(entry.path().string(), "\\")[1], ".")[1] != "wav") continue;
+                soundFiles.push_back(splitString(entry.path().string(), "\\")[1]);
+            }
+
+            for (const auto& soundFile : soundFiles) {
+                std::string soundName = splitString(soundFile, ".")[0];
+                soundNames.push_back(soundName);
+            }
+
+            for (int i = 0; i < soundNames.size(); i++) {
+                std::string filePath = "res/sounds/" + soundNames[i] + ".wav";
+                if (sounds[soundNames[i]].load(filePath.c_str()) != 0) {
+                    Logger::log("Could not load " + soundNames[i] + ".wav");
+                } else sounds[soundNames[i]].setSingleInstance(true);
+            }
+
+            const std::string musicDirName = "res/sounds/music";
+            std::vector<std::string> musicFiles;
+            for (const auto& entry : std::filesystem::directory_iterator(musicDirName)) {
+                if (splitString(splitString(entry.path().string(), "\\")[1], ".").size() != 2) continue;
+                else if (splitString(splitString(entry.path().string(), "\\")[1], ".")[1] != "wav") continue;
+                musicFiles.push_back(splitString(entry.path().string(), "\\")[1]);
+            }
+
+            for (const auto& musicFile : musicFiles) {
+                std::string songName = splitString(musicFile, ".")[0];
+                musicNames.push_back(songName);
+            }
+
+            for (int i = 0; i < musicNames.size(); i++) {
+                std::string filePath = "res/sounds/music/" + musicNames[i] + ".wav";
+                if (music[musicNames[i]].load(filePath.c_str()) != 0) {
+                    Logger::log("Could not load " + musicNames[i] + ".wav");
+                } else {
+                    music[musicNames[i]].setSingleInstance(true);
+                    music[musicNames[i]].setLooping(true);
+                }
+            }
+        }
+
+        static void shutdown() {
+            soloud.deinit();
+        }
+
+        friend class MusicManager;
+    private:
+        inline static SoLoud::Soloud soloud;
+        inline static bool _failedInit = false;
+
+        inline static std::map<std::string, SoLoud::Wav> sounds;
+        inline static std::vector<std::string> soundNames;
+
+        inline static std::map<std::string, SoLoud::Wav> music;
+        inline static std::vector<std::string> musicNames;
+
+        inline static SoLoud::handle _currentSong;
+        inline static bool _songIsPlaying = false;
+        inline static SoLoud::time _songLength = 0;
+        inline static long long _songStartTimeMillis = 0;
+    };
+}
+
+#endif
