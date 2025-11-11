@@ -2,8 +2,6 @@
 // Licensed under the MIT License. See LICENSE file.
 
 #include "VisualNode.h"
-#include "../tree/Node.h"
-#include "../tree/Tree.h"
 #include "../../PennyEngine/PennyEngine.h"
 #include "../../PennyEngine/ui/UI.h"
 #include "VisualTree.h"

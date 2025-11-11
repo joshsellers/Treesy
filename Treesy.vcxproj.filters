@@ -267,12 +267,6 @@
     <ClCompile Include="Treesy\core\ProgramManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Treesy\tree\Node.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Treesy\tree\Tree.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Treesy\visual\VisualNode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -403,12 +397,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Treesy\core\ProgramManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Treesy\tree\Node.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Treesy\tree\Tree.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Treesy\visual\VisualNode.h">
