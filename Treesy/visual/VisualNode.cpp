@@ -86,12 +86,12 @@ void VisualNode::update() {
     if (!_isSelected && _lastSelected) _isArmed = false;
     _lastSelected = _isSelected;
 
-    if (((getBounds().contains(_mPos.x, _mPos.y) && !_mouseDown) || _isSelected) && !_isArmed && !preferParent) {
+    if (((getBounds().contains(_mPos.x, _mPos.y) && !_mouseDown) || _isSelected) && !_isArmed && !preferParent && !isSelectingMovement()) {
         setAppearance(pe::NODE_HOVER_CONFIG);
         _hideInterface = false;
     } else if ((!_mouseDown || !getBounds().contains(_mPos.x, _mPos.y)) && !_isArmed) {
-        setAppearance(pe::NODE_CONFIG);
-        _hideInterface = true;
+        setAppearance(pe::NODE_CONFIG); // make this look better
+        _hideInterface = !isSelectingMovement();
     } else if (_isArmed) {
         setAppearance(pe::NODE_ARMED_CONFIG);
         _hideInterface = false;
@@ -172,7 +172,7 @@ void VisualNode::draw(sf::RenderTexture& surface) {
 
     connectToParent(surface);
 
-    if (!_hideInterface && (!_isArmed || getBounds().contains(_mPos.x, _mPos.y))) {
+    if (!_hideInterface && (!_isArmed || getBounds().contains(_mPos.x, _mPos.y)) && !isSelectingMovement()) {
         _plusButton.setPosition(_pos.x + getBounds().width - _plusButton.getSize().x, _pos.y + getBounds().height - _plusButton.getSize().y);
         _minusButton.setPosition(_pos.x, _pos.y + getBounds().height - _minusButton.getSize().y);
 
@@ -199,6 +199,74 @@ void VisualNode::draw(sf::RenderTexture& surface) {
         surface.draw(_plusButton);
         if (hasParent()) surface.draw(_minusButton);
     }
+
+    if (_hasMovement && _endPointNode != nullptr && _endPointNode->isActive()) {
+        drawMovementLine(surface);
+        if (_selectingMovement) _selectingMovement = false;
+    } else if (_hasMovement && (_endPointNode == nullptr || !_endPointNode->isActive())) {
+        _hasMovement = false;
+        _endPointNode = nullptr;
+    }
+}
+
+void VisualNode::drawMovementLine(sf::RenderTexture& surface) {
+    const sf::Vector2f p0 = {
+        getBounds().left + getBounds().width / 2.f,
+        getBounds().top + getBounds().height + pe::UI::percentToScreenHeight(0.5f)
+    };
+    const sf::Vector2f p1 = {
+        _endPointNode->getBounds().left + _endPointNode->getBounds().width / 2.f,
+        _endPointNode->getBounds().top + _endPointNode->getBounds().height + pe::UI::percentToScreenHeight(0.5f)
+    };
+
+    sf::Vector2f control = 0.5f * (p0 + p1);
+    control.y += -500.f + (p0.y + p1.y) / 2.f;
+
+    std::vector<Line> lines;
+
+    const int segments = 20;
+    for (int i = 0; i < segments; ++i) {
+        float t0 = i / float(segments);
+        float t1 = (i + 1) / float(segments);
+
+        const auto bez = [&](float t) {
+            float u = 1.f - t;
+            return u * u * p0 + 2 * u * t * control + t * t * p1;
+            };
+
+        sf::Vector2f a = bez(t0);
+        sf::Vector2f b = bez(t1);
+
+        lines.emplace_back(a, b, 4.f, sf::Color::Black);
+    }
+
+    for (const auto& line : lines) {
+        surface.draw(line);
+    }
+
+
+    const auto& lastLine = lines.at(lines.size() - 1);
+    const float angle = std::atan2(lastLine.point1.y - lastLine.point2.y, lastLine.point1.x - lastLine.point2.x) + pe::degToRads(270.f);
+
+    constexpr float arrowSize = 20.f;
+    constexpr float flair = 4.f;
+    sf::ConvexShape arrow(4);
+    sf::Vector2f arrowVertices[4] = {
+        { (p1.x - arrowSize / 2.f), (p1.y + flair) },
+        { p1.x, p1.y - arrowSize },
+        { p1.x + arrowSize / 2.f, p1.y + flair },
+        { p1.x, p1.y }
+    };
+
+    for (int i = 0; i < 4; i++) {
+        const sf::Vector2f originalVertices = arrowVertices[i] - p1;
+        arrowVertices[i].x = originalVertices.x * std::cos(angle) - originalVertices.y * std::sin(angle);
+        arrowVertices[i].y = originalVertices.x * std::sin(angle) + originalVertices.y * std::cos(angle);
+        arrow.setPoint(i, arrowVertices[i] + p1);
+    }
+    arrow.setFillColor(sf::Color::Black);
+
+    surface.draw(arrow);
 }
 
 bool VisualNode::anotherNodeIsBlocking() const {
@@ -222,20 +290,51 @@ void VisualNode::mouseButtonPressed(const int mx, const int my, const int button
 void VisualNode::mouseButtonReleased(const int mx, const int my, const int button) {
     if (_isArmed && !getBounds().contains(mx, my)) _isArmed = false;
 
-    if (anotherNodeIsBlocking()) return;
+    if (anotherNodeIsBlocking() && !isSelectingMovement()) return;
 
-    _isArmed = !_clickingButtons && getBounds().contains(mx, my) && button == sf::Mouse::Left;
+    _isArmed = !_clickingButtons && getBounds().contains(mx, my) && button == sf::Mouse::Left && !sf::Keyboard::isKeyPressed(sf::Keyboard::Key::LControl);
     _mouseDown = false;
 
-    if (_plusButton.getGlobalBounds().contains(mx, my) && getBounds().contains(_mPos.x, _mPos.y) && button == sf::Mouse::Left) {
-        addChild();
-    } else if (hasParent() && _minusButton.getGlobalBounds().contains(mx, my) && getBounds().contains(_mPos.x, _mPos.y) && button == sf::Mouse::Left) {
-        hide();
-    } else if (getBounds().contains(_mPos.x, _mPos.y) && button == sf::Mouse::Right) {
-        const auto& menu = pe::UI::getMenu("subscriptMenu");
-        menu->open();
-        menu->getComponent("subscriptField")->getText().setString(_subscript.getString());
-        _enteringSubscript = true;
+    if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Key::LControl) && !isSelectingMovement()) {
+        if (_plusButton.getGlobalBounds().contains(mx, my) && getBounds().contains(_mPos.x, _mPos.y) && button == sf::Mouse::Left) {
+            addChild();
+        } else if (hasParent() && _minusButton.getGlobalBounds().contains(mx, my) && getBounds().contains(_mPos.x, _mPos.y) && button == sf::Mouse::Left) {
+            hide();
+        } else if (getBounds().contains(_mPos.x, _mPos.y) && button == sf::Mouse::Right) {
+            const auto& menu = pe::UI::getMenu("subscriptMenu");
+            menu->open();
+            menu->getComponent("subscriptField")->getText().setString(_subscript.getString());
+            _enteringSubscript = true;
+        }
+    } 
+    
+    if (getBounds().contains(_mPos.x, _mPos.y) && button == sf::Mouse::Left && sf::Keyboard::isKeyPressed(sf::Keyboard::Key::LControl)) {
+        if (!isSelectingMovement() && !_hasMovement) {
+            bool otherNode = false;
+            for (const auto& node : VisualTree::getNodes()) {
+                if (node->isSelectingMovement()) {
+                    otherNode = true;
+                    break;
+                }
+            }
+
+            if (!otherNode) {
+                _selectingMovement = true;
+            }
+        } else if (_hasMovement) {
+            _hasMovement = false;
+            _endPointNode = nullptr;
+        }
+    } else if (isSelectingMovement() && button == sf::Mouse::Left) {
+        for (const auto& node : VisualTree::getNodes()) {
+            if (node->getIdentifier() != getIdentifier() && node->getBounds().contains(mx, my)) {
+                _hasMovement = true;
+                _endPointNode = node;
+                break;
+            }
+        }
+
+        if (!_hasMovement) _selectingMovement = false;
     }
 
     _clickingButtons = false;
@@ -249,11 +348,15 @@ void VisualNode::mouseMoved(const int mx, const int my) {
 }
 
 bool VisualNode::hasMousePriority() const {
-    return getBounds().contains(_mPos.x, _mPos.y);
+    return getBounds().contains(_mPos.x, _mPos.y) || isSelectingMovement();
 }
 
 void VisualNode::releasePriority() {
     _mPos = { 0, 0 };
+}
+
+bool VisualNode::isSelectingMovement() const {
+    return _selectingMovement;
 }
 
 void VisualNode::textEntered(const sf::Uint32 character) {

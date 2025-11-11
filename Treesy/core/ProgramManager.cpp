@@ -8,6 +8,7 @@
 #include "UIHandler.h"
 #include "../../PennyEngine/ui/UI.h"
 #include "Settings.h"
+#include "../visual/Line.h"
 
 ProgramManager::ProgramManager() {
     PennyEngine::addInputListener(this);

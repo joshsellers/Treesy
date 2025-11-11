@@ -37,10 +37,14 @@ public:
     
     virtual bool hasMousePriority() const;
     void releasePriority();
+
+    bool isSelectingMovement() const;
 protected:
     virtual void update();
     virtual void draw(sf::RenderTexture& surface); 
 private:
+    virtual void drawMovementLine(sf::RenderTexture& surface);
+
     bool anotherNodeIsBlocking() const;
 
     std::vector<s_p<VisualNode>> _children;
@@ -59,6 +63,10 @@ private:
 
     sf::Text _subscript;
     bool _enteringSubscript = false;
+
+    bool _selectingMovement = false;
+    bool _hasMovement = false;
+    s_p<VisualNode> _endPointNode = nullptr;
 };
 
 #endif
