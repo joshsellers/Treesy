@@ -23,10 +23,11 @@ void UIHandlerImpl::init() {
     subscriptPanel->attach(subscriptMenu->getComponent("close_subscriptMenu"));
 
     auto mainMenu = pe::UI::addMenu("main");
-    mainMenu->addComponent(new_s_p(pe::Button, ("open_settings", 10, 13, 7, 3, "Settings", this)));
-    mainMenu->addComponent(new_s_p(pe::Button, ("export", 10, 18, 8, 3, "Export tree", this)));
-    mainMenu->addComponent(new_s_p(pe::Button, ("exit", 10, 23, 6, 3, "Quit", this)));
-    auto mainPanel = new_s_p(pe::Panel, ("mainPanel", 10, 17, 10, 21, "Treesy", true));
+    const sf::Vector2f posOffset = { -3, -3 };
+    mainMenu->addComponent(new_s_p(pe::Button, ("open_settings", 10 + posOffset.x, 13 + posOffset.y, 7, 3, "Settings", this)));
+    mainMenu->addComponent(new_s_p(pe::Button, ("export", 10 + posOffset.x, 18 + posOffset.y, 8, 3, "Export tree", this)));
+    mainMenu->addComponent(new_s_p(pe::Button, ("exit", 10 + posOffset.x, 23 + posOffset.y, 6, 3, "Quit", this)));
+    auto mainPanel = new_s_p(pe::Panel, ("mainPanel", 10 + posOffset.x, 17 + posOffset.y, 10, 21, "Treesy", true));
     mainPanel->setTextPosition({ 50.f, 14.f });
     mainMenu->addComponent(mainPanel);
     mainPanel->attach(mainMenu->getComponent("open_settings"));
