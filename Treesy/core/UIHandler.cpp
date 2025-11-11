@@ -9,6 +9,8 @@
 #include "../../PennyEngine/core/Util.h"
 #include <Windows.h>
 #include "../../PennyEngine/core/Logger.h"
+#include "../visual/VisualTree.h"
+#include "Settings.h"
 
 void UIHandlerImpl::init() {
     auto subscriptMenu = pe::UI::addMenu("subscriptMenu");
@@ -46,10 +48,49 @@ void UIHandlerImpl::buttonPressed(std::string buttonId) {
         if (menu != nullptr) menu->open();
     } else if (buttonId == "export") {
         const std::string path = UIHandler::getExportPath();
-        pe::Logger::log(path);
-        // do something with the path
+        saveImage(path);
     } else if (buttonId == "exit") {
         PennyEngine::stop();
+    }
+}
+
+void UIHandlerImpl::saveImage(std::string path) {
+    const pe::Resolution res = PennyEngine::getRenderResolution();
+
+    float lowestX = 9999999;
+    float lowestY = 9999999;
+    float highestX = 0;
+    float highestY = 0;
+    for (const auto& node : VisualTree::getNodes()) {
+        const sf::Vector2f pos = node->getPosition();
+        const sf::Vector2f size = { node->getBounds().width, node->getBounds().height };
+
+        lowestX = std::min(pos.x, lowestX);
+        lowestY = std::min(pos.y, lowestY);
+        highestX = std::max(pos.x + size.x, highestX);
+        highestY = std::max(pos.y + size.y, highestY);
+    }
+    const sf::Vector2f size = { highestX - lowestX, highestY - lowestY };
+    const sf::View view({ lowestX + size.x / 2.f, lowestY + size.y / 2.f }, size);
+
+    sf::RenderTexture outputSurface;
+    outputSurface.create(size.x, size.y);
+    const sf::Texture& outputSurfaceTexture = outputSurface.getTexture();
+
+    sf::RectangleShape bg;
+    bg.setFillColor(Settings::bgColor);
+    bg.setPosition(lowestX, lowestY);
+    bg.setSize({(float)view.getSize().x, (float)view.getSize().y});
+
+    outputSurface.setView(view);
+    outputSurface.draw(bg);
+    VisualTree::draw(outputSurface);
+    outputSurface.display();
+
+    const bool result = outputSurfaceTexture.copyToImage().saveToFile(path);
+
+    if (!result) {
+        pe::Logger::log("Failed to save: " + path);
     }
 }
 

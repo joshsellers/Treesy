@@ -12,7 +12,7 @@ public:
 protected:
     virtual void buttonPressed(std::string buttonId);
 private:
-
+    void saveImage(std::string path);
 };
 
 class UIHandler {

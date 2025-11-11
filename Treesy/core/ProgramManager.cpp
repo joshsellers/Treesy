@@ -8,6 +8,7 @@
 #include "../../PennyEngine/core/Logger.h"
 #include "UIHandler.h"
 #include "../../PennyEngine/ui/UI.h"
+#include "Settings.h"
 
 ProgramManager::ProgramManager() {
     PennyEngine::addInputListener(this);
@@ -28,7 +29,7 @@ void ProgramManager::draw(sf::RenderTexture& surface) {
     bg.setSize(PennyEngine::getCamera().getSize());
     const sf::Vector2f cameraPos = PennyEngine::getCamera().getCenter();
     bg.setPosition(cameraPos.x - bg.getSize().x / 2.f, cameraPos.y - bg.getSize().y / 2.f);
-    bg.setFillColor(sf::Color(0xDDDDDDFF));
+    bg.setFillColor(Settings::bgColor);
     surface.draw(bg);
 
     VisualTree::draw(surface);
