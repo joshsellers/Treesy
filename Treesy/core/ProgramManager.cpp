@@ -52,6 +52,9 @@ void ProgramManager::keyPressed(sf::Keyboard::Key& key) {
 
 void ProgramManager::keyReleased(sf::Keyboard::Key& key) {
     if (key == sf::Keyboard::Key::Escape) PennyEngine::stop();
+    else if (key == sf::Keyboard::Key::F) {
+        pe::Logger::log(UIHandler::getExportPath());
+    }
 }
 
 static sf::Vector2f mapMouseCoordinates(const int mx, const int my) {

@@ -18,6 +18,8 @@ private:
 class UIHandler {
 public:
     static void init();
+
+    static std::string getExportPath();
 private:
     static inline UIHandlerImpl _instance;
 };
