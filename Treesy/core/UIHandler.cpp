@@ -55,8 +55,6 @@ void UIHandlerImpl::buttonPressed(std::string buttonId) {
 }
 
 void UIHandlerImpl::saveImage(std::string path) {
-    const pe::Resolution res = PennyEngine::getRenderResolution();
-
     float lowestX = 9999999;
     float lowestY = 9999999;
     float highestX = 0;

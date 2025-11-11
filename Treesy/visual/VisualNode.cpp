@@ -178,6 +178,26 @@ void VisualNode::draw(sf::RenderTexture& surface) {
         _plusButton.setPosition(_pos.x + getBounds().width - _plusButton.getSize().x, _pos.y + getBounds().height - _plusButton.getSize().y);
         _minusButton.setPosition(_pos.x, _pos.y + getBounds().height - _minusButton.getSize().y);
 
+        if (_plusButton.getGlobalBounds().contains(_mPos.x, _mPos.y)) {
+            _plusButton.setTextureRect({
+                0, 16, 16, 16
+            });
+        } else {
+            _plusButton.setTextureRect({
+                0, 0, 16, 16
+            });
+        }
+
+        if (_minusButton.getGlobalBounds().contains(_mPos.x, _mPos.y)) {
+            _minusButton.setTextureRect({
+                16, 16, 16, 16
+            });
+        } else {
+            _minusButton.setTextureRect({
+                16, 0, 16, 16
+            });
+        }
+
         surface.draw(_plusButton);
         if (hasParent()) surface.draw(_minusButton);
     }

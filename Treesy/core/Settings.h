@@ -10,7 +10,7 @@ class Settings {
 public:
     static inline bool showTermLines = false;
 
-    static inline sf::Color bgColor = sf::Color(0xDDDDDDFF);
+    static inline sf::Color bgColor = sf::Color(0xFFFFFFFF);
     static inline sf::Color lineColor = sf::Color::Black;
     static inline sf::Color nonTermColor = sf::Color::Blue;
     static inline sf::Color termColor = sf::Color(0x008000FF);
