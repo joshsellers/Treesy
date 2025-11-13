@@ -35,7 +35,7 @@ void VisualTreeImpl::update() {
 
     if (_nodes.size() != 0) {
         alignNode(_nodes.at(0));
-        centerNodes(_nodes.at(0));
+        if (Settings::center) centerNodes(_nodes.at(0));
     }
 }
 
@@ -59,40 +59,48 @@ void VisualTreeImpl::centerNodes(s_p<VisualNode> node) {
 float VisualTreeImpl::alignNode(s_p<VisualNode> node) {
     auto& children = node->getChildren();
 
-    std::vector<float> widths;
-    widths.reserve(children.size());
+    if (children.empty()) {
+        return node->getBounds().width;
+    }
 
-    float sumWidths = 0;
     for (auto& child : children) {
-        float w = alignNode(child);
-        w = std::max(w, child->getBounds().width);
-        widths.push_back(w);
-        sumWidths += w;
+        alignNode(child);
     }
 
-    float totalWidth = std::max(sumWidths, node->getBounds().width);
-
-    float parentCenter = node->getPosition().x + node->getBounds().width / 2.f;
-
-    float padding = (totalWidth - sumWidths) / 2.f;
-    float xCursor = parentCenter - totalWidth / 2.f + padding;
-
-    for (int i = 0; i < children.size(); i++) {
-        auto& child = children[i];
-        float w = widths[i];
-
-        float desiredCenter = xCursor + w / 2;
-
-        float currentCenter = child->getPosition().x + child->getBounds().width / 2.f;
-
-        float dx = desiredCenter - currentCenter;
-        child->move({ dx, 0 });
-
-        xCursor += w;
+    std::vector<float> childWidths(children.size());
+    for (size_t i = 0; i < children.size(); ++i) {
+        childWidths[i] = children[i]->getBounds().width;
     }
 
-    return totalWidth;
+    float spacing = 25.f + Settings::horzSpacing;
+
+    float xCursor = 0.f;
+    std::vector<float> childCenters(children.size());
+
+    for (size_t i = 0; i < children.size(); ++i) {
+        float w = childWidths[i];
+        float center = xCursor + w * 0.5f;
+
+        childCenters[i] = center;
+        xCursor += w + spacing;
+    }
+
+    float totalChildrenWidth = xCursor - spacing;
+
+    float parentCenterX = node->getPosition().x + node->getBounds().width * 0.5f;
+    float childrenCenterX = (childCenters.front() + childCenters.back()) * 0.5f;
+
+    float offset = parentCenterX - childrenCenterX;
+
+    for (size_t i = 0; i < children.size(); ++i) {
+        float targetCenter = childCenters[i] + offset;
+        float currentCenter = children[i]->getPosition().x + childWidths[i] * 0.5f;
+        children[i]->move({ targetCenter - currentCenter, 0 });
+    }
+
+    return std::max(totalChildrenWidth, node->getBounds().width);
 }
+
 
 void VisualTreeImpl::draw(sf::RenderTexture& surface) {
     std::sort(_renderNodes.begin(), _renderNodes.end(),

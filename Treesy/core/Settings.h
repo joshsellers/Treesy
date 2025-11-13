@@ -9,6 +9,7 @@
 class Settings {
 public:
     static inline bool showTermLines = false;
+    static inline bool center = false;
 
     static inline sf::Color bgColor = sf::Color(0xFFFFFFFF);
     static inline sf::Color lineColor = sf::Color::Black;
@@ -17,6 +18,8 @@ public:
 
     static inline float nontermVerticalDistance = 8.f;
     static inline float termVerticalDistance = showTermLines ? nontermVerticalDistance : 6.f;
+
+    static inline float horzSpacing = 0.f;
 private:
 
 };

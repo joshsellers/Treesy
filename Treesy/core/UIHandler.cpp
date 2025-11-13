@@ -6,6 +6,7 @@
 #include "../../PennyEngine/ui/components/TextField.h"
 #include "../../PennyEngine/ui/components/Panel.h"
 #include "../../PennyEngine/ui/components/Button.h"
+#include "../../PennyEngine/ui/components/Slider.h"
 #include "../../PennyEngine/core/Util.h"
 #include <Windows.h>
 #include "../../PennyEngine/core/Logger.h"
@@ -40,6 +41,20 @@ void UIHandlerImpl::init() {
     mainPanel->attach(mainMenu->getComponent("open_settings"));
     mainPanel->attach(mainMenu->getComponent("exit"));
     mainMenu->open();
+
+    auto settingsMenu = pe::UI::addMenu("settings");
+    settingsMenu->addComponent(new_s_p(pe::Slider, ("widthSlider", 7, 53.f, {8, 1.f}, {1.f, 2.f}, "Horizontal Spacing", this)));
+    pe::Slider* slider = dynamic_cast<pe::Slider*>(settingsMenu->getComponent("widthSlider").get());
+    slider->setValue(0.f);
+    slider->getText().setCharacterSize(pe::UI::percentToScreenWidth(1.f));
+
+    settingsMenu->addComponent(new_s_p(pe::Button, ("close_settings", 7, 72, 6, 3, "Done", this)));
+
+    auto settingsPanel = new_s_p(pe::Panel, ("settingsPanel", 7, 60, 13, 30, "Settings", true));
+    settingsPanel->setTextPosition(50.f, 14.f);
+    settingsMenu->addComponent(settingsPanel);
+    settingsPanel->attach(settingsMenu->getComponent("widthSlider"));
+    settingsPanel->attach(settingsMenu->getComponent("close_settings"));
 }
 
 void UIHandler::init() {
@@ -65,6 +80,12 @@ void UIHandlerImpl::buttonPressed(std::string buttonId) {
         const std::string path = UIHandler::getLoadPath();
         VisualTree::reset();
         Persistence::load(path);
+    }
+}
+
+void UIHandlerImpl::sliderMoved(std::string sliderId, float value) {
+    if (sliderId == "widthSlider") {
+        Settings::horzSpacing = value * 500.f;
     }
 }
 

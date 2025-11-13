@@ -5,12 +5,14 @@
 #define _UI_HANDLER_H
 
 #include "../../PennyEngine/ui/components/ButtonListener.h"
+#include "../../PennyEngine/ui/components/SliderListener.h"
 
-class UIHandlerImpl : public pe::ButtonListener {
+class UIHandlerImpl : public pe::ButtonListener, public pe::SliderListener {
 public:
     void init();
 protected:
-    virtual void buttonPressed(std::string buttonId);
+    virtual void buttonPressed(std::string buttonId); 
+    virtual void sliderMoved(std::string sliderId, float value);
 private:
     void saveImage(std::string path);
 };
