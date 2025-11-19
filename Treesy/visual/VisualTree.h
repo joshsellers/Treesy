@@ -10,6 +10,11 @@
 #include "../../PennyEngine/input/KeyListener.h"
 #include "../../PennyEngine/input/MouseListener.h"
 
+struct SubtreeWidth {
+    float left;
+    float right;
+};
+
 class VisualTreeImpl : public pe::KeyListener, public pe::MouseListener {
 public:
     VisualTreeImpl();
@@ -38,7 +43,7 @@ private:
 
     std::vector<s_p<VisualNode>> _nodeBuffer;
 
-    float alignNode(s_p<VisualNode> node);
+    SubtreeWidth alignNode(s_p<VisualNode> node);
     void centerNodes(s_p<VisualNode> node);
 };
 

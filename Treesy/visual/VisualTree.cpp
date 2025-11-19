@@ -56,49 +56,49 @@ void VisualTreeImpl::centerNodes(s_p<VisualNode> node) {
     }
 }
 
-float VisualTreeImpl::alignNode(s_p<VisualNode> node) {
+SubtreeWidth VisualTreeImpl::alignNode(s_p<VisualNode> node) {
     auto& children = node->getChildren();
+    float nodeWidth = node->getBounds().width;
 
     if (children.empty()) {
-        return node->getBounds().width;
+        float half = nodeWidth * 0.5f;
+        return { half, half };
     }
 
-    for (auto& child : children) {
-        alignNode(child);
-    }
+    const float horzSpace = Settings::horzSpacing;
 
-    std::vector<float> childWidths(children.size());
+    std::vector<SubtreeWidth> cw(children.size());
     for (size_t i = 0; i < children.size(); ++i) {
-        childWidths[i] = children[i]->getBounds().width;
+        cw[i] = alignNode(children[i]);
     }
 
-    float spacing = 25.f + Settings::horzSpacing;
-
-    float xCursor = 0.f;
-    std::vector<float> childCenters(children.size());
-
-    for (size_t i = 0; i < children.size(); ++i) {
-        float w = childWidths[i];
-        float center = xCursor + w * 0.5f;
-
-        childCenters[i] = center;
-        xCursor += w + spacing;
+    float step = 0.f;
+    for (size_t i = 0; i + 1 < children.size(); ++i) {
+        float required =
+            cw[i].right + horzSpace + cw[i + 1].left;
+        step = std::max(step, required);
     }
 
-    float totalChildrenWidth = xCursor - spacing;
+    size_t n = children.size();
+    float halfSpread = ((float)(n - 1) * 0.5f) * step;
 
-    float parentCenterX = node->getPosition().x + node->getBounds().width * 0.5f;
-    float childrenCenterX = (childCenters.front() + childCenters.back()) * 0.5f;
+    float leftWidth = std::max(halfSpread + cw.front().left, nodeWidth * 0.5f);
+    float rightWidth = std::max(halfSpread + cw.back().right, nodeWidth * 0.5f);
 
-    float offset = parentCenterX - childrenCenterX;
+    float parentCenter = node->getPosition().x + nodeWidth * 0.5f;
 
-    for (size_t i = 0; i < children.size(); ++i) {
-        float targetCenter = childCenters[i] + offset;
-        float currentCenter = children[i]->getPosition().x + childWidths[i] * 0.5f;
-        children[i]->move({ targetCenter - currentCenter, 0 });
+    float leftStart = parentCenter - halfSpread;
+
+    for (size_t i = 0; i < n; ++i) {
+        float childCenter = leftStart + i * step;
+        auto& child = children[i];
+        float childWidth = child->getBounds().width;
+        float currentCenter = child->getPosition().x + childWidth * 0.5f;
+
+        child->move({ childCenter - currentCenter, 0 });
     }
 
-    return std::max(totalChildrenWidth, node->getBounds().width);
+    return { leftWidth, rightWidth };
 }
 
 
