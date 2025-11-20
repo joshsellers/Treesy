@@ -1,7 +1,7 @@
 // Copyright (c) 2025 Josh Sellers
 // Licensed under the MIT License. See LICENSE file.
 
-#include "Persistence.h";
+#include "Persistence.h"
 #include "../../PennyEngine/core/Util.h"
 #include "../../PennyEngine/core/Logger.h"
 #include "../visual/VisualTree.h"
@@ -9,11 +9,12 @@
 #include <iostream>
 
 static void write(std::ofstream& out, std::string output) {
-    out << output << std::endl;
+    output += "\n";
+    out.write(output.data(), output.size());
 }
 
 void PersistenceImpl::save(std::string path) {
-    std::ofstream out(path);
+    std::ofstream out(path, std::ios::binary);
 
     const auto& nodes = VisualTree::getNodes();
     for (const auto& node : nodes) {
@@ -29,7 +30,9 @@ void PersistenceImpl::save(std::string path) {
             }
             out << std::endl;
         }
-        write(out, "text: \"" + node->getText().getString() + "\"");
+        const auto utf8Vec = node->getText().getString().toUtf8();
+        std::string utf8Str(utf8Vec.begin(), utf8Vec.end());
+        write(out, "text: \"" + utf8Str + "\"");
         write(out, "subs: \"" + node->getSubscript() + "\"");
         write(out, "hasMovement: " + std::string(node->hasMovement() ? "true" : "false"));
         if (node->hasMovement()) write(out, "endPointNode: " + node->_endPointNode->getIdentifier());
@@ -37,16 +40,22 @@ void PersistenceImpl::save(std::string path) {
         write(out, "curveHeight: " + std::to_string(node->_curveHeight));
         write(out, "}");
     }
+
+    out.close();
 }
 
-void PersistenceImpl::load(std::string path) {
-    std::ifstream in(path);
+void PersistenceImpl::load(std::string path, bool convert) {
+    std::ifstream in(path, convert ? std::ios::in : std::ios::binary);
+
     if (in.good()) {
         try {
-            std::string line;
+            std::string input;
+            input.assign(std::istreambuf_iterator<char>(in), std::istreambuf_iterator<char>());
+            std::vector<std::string> lines = pe::splitString(input, "\n");
+
             bool readingNode = false;
             std::vector<std::string> nodeLines;
-            while (getline(in, line)) {
+            for (std::string line : lines) {
                 if (!readingNode && line == "{") readingNode = true;
                 else if (readingNode && line == "}") {
                     readingNode = false;
@@ -58,6 +67,7 @@ void PersistenceImpl::load(std::string path) {
             pe::Logger::log(ex.what());
         }
     }
+    in.close();
 
     for (const auto& pair : _children) {
         const auto& parent = findNode(pair.first);
@@ -98,6 +108,11 @@ void PersistenceImpl::load(std::string path) {
 
     _children.clear();
     _endPoints.clear();
+
+    if (VisualTree::getNodes().size() == 0) {
+        pe::Logger::log("No nodes were created; attempting to convert file from older version.");
+        load(path, true);
+    }
 }
 
 void PersistenceImpl::createNode(std::vector<std::string> lines) {
@@ -144,7 +159,7 @@ void PersistenceImpl::createNode(std::vector<std::string> lines) {
     if (parent != "") parentNode = findNode(parent);
     const s_p<VisualNode> node = new_s_p(VisualNode, (parentNode.get(), pos.x, pos.y, id));
 
-    node->getText().setString(fieldText);
+    node->getText().setString(sf::String::fromUtf8(fieldText.begin(), fieldText.end()));
     node->_subscript.setString(subscript);
     node->_hasMovement = hasMovement;
     node->_curveAngle = curveAngle;

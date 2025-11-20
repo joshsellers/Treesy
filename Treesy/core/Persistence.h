@@ -12,7 +12,7 @@
 class PersistenceImpl {
 public:
     void save(std::string path);
-    void load(std::string path);
+    void load(std::string path, bool convert = false);
 private:
     const std::vector<std::string> _operators = { "!=", "==", ">=", "<=", "+", "*", "/", "=", ";", ",", ":", "(", ")", "{", "}", ">", "<", "!", "%" };
     std::vector<std::string> tokenize(std::string inScript);
