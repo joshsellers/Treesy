@@ -33,6 +33,9 @@ protected:
 private:
     sf::Vector2i _clickPos;
     bool _clickedIntoNode = false;
+
+    bool _showDebug = false;
+    sf::Text _versionLabel;
 };
 
 #endif

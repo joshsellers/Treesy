@@ -112,6 +112,9 @@
       <AdditionalLibraryDirectories>C:\Users\joshs\LocalDocuments\SFML-2.5.1\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>sfml-window.lib;sfml-graphics.lib;sfml-system.lib;XInput9_1_0.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PreBuildEvent>
+      <Command>del "$(IntDir)Versioning.obj"</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -131,6 +134,9 @@
       <AdditionalLibraryDirectories>C:\Users\joshs\LocalDocuments\SFML-2.5.1\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>sfml-window.lib;sfml-graphics.lib;sfml-system.lib;XInput9_1_0.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PreBuildEvent>
+      <Command>del "$(IntDir)Versioning.obj"</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="PennyEngine\core\EngineInstance.cpp" />
@@ -219,6 +225,7 @@
     <ClCompile Include="Treesy\core\Persistence.cpp" />
     <ClCompile Include="Treesy\core\ProgramManager.cpp" />
     <ClCompile Include="Treesy\core\UIHandler.cpp" />
+    <ClCompile Include="Treesy\core\Versioning.cpp" />
     <ClCompile Include="Treesy\visual\VisualNode.cpp" />
     <ClCompile Include="Treesy\visual\VisualTree.cpp" />
   </ItemGroup>
@@ -270,6 +277,7 @@
     <ClInclude Include="Treesy\core\ProgramManager.h" />
     <ClInclude Include="Treesy\core\Settings.h" />
     <ClInclude Include="Treesy\core\UIHandler.h" />
+    <ClInclude Include="Treesy\core\Versioning.h" />
     <ClInclude Include="Treesy\visual\Line.h" />
     <ClInclude Include="Treesy\visual\VisualNode.h" />
     <ClInclude Include="Treesy\visual\VisualTree.h" />

@@ -9,6 +9,7 @@
 #include "../../PennyEngine/ui/UI.h"
 #include "Settings.h"
 #include "../visual/Line.h"
+#include "Versioning.h"
 
 ProgramManager::ProgramManager() {
     PennyEngine::addInputListener(this);
@@ -18,6 +19,12 @@ void ProgramManager::init() {
     VisualTree::addChild(nullptr);
 
     UIHandler::init();
+
+    _versionLabel.setFont(PennyEngine::getFont());
+    _versionLabel.setString("v" + VERSION + " (" + BUILD_NUMBER + ")");
+    _versionLabel.setCharacterSize(pe::UI::percentToScreenWidth(1.f));
+    _versionLabel.setPosition(0, 0);
+    _versionLabel.setFillColor(sf::Color::Black);
 }
 
 void ProgramManager::update() {
@@ -36,6 +43,9 @@ void ProgramManager::draw(sf::RenderTexture& surface) {
 }
 
 void ProgramManager::drawUI(sf::RenderTexture& surface) {
+    if (_showDebug) {
+        surface.draw(_versionLabel);
+    }
 }
 
 void ProgramManager::onShutdown() {
@@ -61,6 +71,8 @@ void ProgramManager::keyReleased(sf::Keyboard::Key& key) {
             }
         }
     }
+
+    if (key == sf::Keyboard::F3) _showDebug = !_showDebug;
 }
 
 static sf::Vector2f mapMouseCoordinates(const int mx, const int my) {
