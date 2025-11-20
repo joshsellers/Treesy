@@ -31,11 +31,25 @@ VisualNode::VisualNode(VisualNode* parent, float x, float y, const std::string i
         0, 0, 16, 16    
     });
 
+    _leftPlusButton.setSize({ buttonSize, buttonSize });
+    _leftPlusButton.setPosition(_pos.x + _plusButton.getSize().x, _pos.y + getBounds().height / 2.f - _plusButton.getSize().y);
+    _leftPlusButton.setTexture(pe::UI::getSpriteSheet().get());
+    _leftPlusButton.setTextureRect({
+        0, 0, 16, 16    
+    });
+
     _minusButton.setSize({ buttonSize, buttonSize });
-    _minusButton.setPosition(_pos.x + _minusButton.getSize().x, _pos.y + getBounds().height / 2.f - _minusButton.getSize().y);
+    _minusButton.setPosition(_pos.x + getBounds().width / 2.f - _minusButton.getSize().x / 2.f, _pos.y + getBounds().height / 2.f - _minusButton.getSize().y);
     _minusButton.setTexture(pe::UI::getSpriteSheet().get()); 
     _minusButton.setTextureRect({
         16, 0, 16, 16
+    });
+
+    _triangleButton.setSize({ buttonSize, buttonSize });
+    _triangleButton.setPosition(_pos.x + _minusButton.getSize().x, _pos.y);
+    _triangleButton.setTexture(pe::UI::getSpriteSheet().get());
+    _triangleButton.setTextureRect({
+        32, 0, 16, 16
     });
 }
 
@@ -61,20 +75,47 @@ sf::Vector2f VisualNode::getPosition() const {
 }
 
 
-void VisualNode::addChild() {
-    if (!hasChildren() && hasParent() && getParent()->getChildren().size() == 1) move({ 0, pe::UI::percentToScreenHeight(Settings::termVerticalDistance) });
+void VisualNode::addChild(bool left) {
+    if (!hasChildren() && hasParent() && getParent()->getChildren().size() == 1) move({ 0, pe::UI::percentToScreenHeight(Settings::getTermDistance()) });
     const auto& child = VisualTree::addChild(this);
-    _children.push_back(child);
+
+    if (left) {
+        _children.insert(_children.begin(), child);
+    } else {
+        _children.push_back(child);
+    }
 }
 
 void VisualNode::connectToParent(sf::RenderTexture& surface) {
-    if (_parent != nullptr && (Settings::showTermLines || hasChildren() || getParent()->getChildren().size() > 1 || hasSubscript())) {
-        const Line line(
-            {_parent->getPosition().x + _parent->getBounds().width / 2.f, _parent->getPosition().y + _parent->getBounds().height}, 
-            {getPosition().x + getBounds().width / 2.f, getPosition().y },
-            4.f
+    if (!_drawTriangle || (hasParent() && getParent()->getChildren().size() > 1)) {
+        if (_parent != nullptr && (Settings::showTermLines || hasChildren() || getParent()->getChildren().size() > 1 || hasSubscript())) {
+            const Line line(
+                { _parent->getPosition().x + _parent->getBounds().width / 2.f, _parent->getPosition().y + _parent->getBounds().height },
+                { getPosition().x + getBounds().width / 2.f, getPosition().y },
+                4.f
+            );
+            surface.draw(line);
+        }
+    } else if (_drawTriangle && (hasParent() && getParent()->getChildren().size() == 1)) {
+        const sf::Vector2f parentBottom = { _parent->getPosition().x + _parent->getBounds().width / 2.f, _parent->getPosition().y + _parent->getBounds().height };
+        const sf::Vector2f leftCorner = { getPosition().x, getPosition().y };
+        const sf::Vector2f rightCorner = { getPosition().x + getBounds().width, getPosition().y };
+
+        const Line toLeft(
+            parentBottom, leftCorner, 4.f
         );
-        surface.draw(line);
+
+        const Line toRight(
+            parentBottom, rightCorner, 4.f
+        );
+
+        const Line leftToRight(
+            leftCorner, rightCorner, 4.f
+        );
+
+        surface.draw(toLeft);
+        surface.draw(toRight);
+        surface.draw(leftToRight);
     }
 }
 
@@ -90,7 +131,7 @@ void VisualNode::update() {
         setAppearance(pe::NODE_HOVER_CONFIG);
         _hideInterface = false;
     } else if ((!_mouseDown || !getBounds().contains(_mPos.x, _mPos.y)) && !_isArmed) {
-        setAppearance(pe::NODE_CONFIG); // make this look better
+        setAppearance(pe::NODE_CONFIG);
         _hideInterface = !isSelectingMovement();
     } else if (_isArmed) {
         setAppearance(pe::NODE_ARMED_CONFIG);
@@ -109,15 +150,15 @@ void VisualNode::update() {
 
     _children.erase(std::remove_if(_children.begin(), _children.end(), [](s_p<VisualNode> node) {return !node->isActive(); }), _children.end());
 
-    if (hasParent()) {
+    if (hasParent() && !_drawTriangle) {
         const float dist = getPosition().y - _parent->getPosition().y;
         if (dist <= pe::UI::percentToScreenHeight(Settings::nontermVerticalDistance)) {
             if (hasChildren() || getParent()->getChildren().size() > 1 || hasSubscript()) {
-                move({ 0, pe::UI::percentToScreenHeight(Settings::termVerticalDistance) });
+                move({ 0, pe::UI::percentToScreenHeight(Settings::getTermDistance()) });
             }
         } else if (dist >= pe::UI::percentToScreenHeight(Settings::nontermVerticalDistance)) {
             if (!hasChildren() && getParent()->getChildren().size() == 1 && !hasSubscript()) {
-                move({ 0, -pe::UI::percentToScreenHeight(Settings::termVerticalDistance) });
+                move({ 0, -pe::UI::percentToScreenHeight(Settings::getTermDistance()) });
             }
         }
     }
@@ -174,7 +215,9 @@ void VisualNode::draw(sf::RenderTexture& surface) {
 
     if (!_hideInterface && (!_isArmed || getBounds().contains(_mPos.x, _mPos.y)) && !isSelectingMovement()) {
         _plusButton.setPosition(_pos.x + getBounds().width - _plusButton.getSize().x, _pos.y + getBounds().height - _plusButton.getSize().y);
-        _minusButton.setPosition(_pos.x, _pos.y + getBounds().height - _minusButton.getSize().y);
+        _leftPlusButton.setPosition(_pos.x, _pos.y + getBounds().height - _plusButton.getSize().y);
+        _minusButton.setPosition(_pos.x, getBounds().top);
+        _triangleButton.setPosition(_pos.x + _minusButton.getSize().x, _pos.y);
 
         if (_plusButton.getGlobalBounds().contains(_mPos.x, _mPos.y)) {
             _plusButton.setTextureRect({
@@ -182,6 +225,16 @@ void VisualNode::draw(sf::RenderTexture& surface) {
             });
         } else {
             _plusButton.setTextureRect({
+                0, 0, 16, 16
+            });
+        }
+
+        if (_leftPlusButton.getGlobalBounds().contains(_mPos.x, _mPos.y)) {
+            _leftPlusButton.setTextureRect({
+                0, 16, 16, 16
+            });
+        } else {
+            _leftPlusButton.setTextureRect({
                 0, 0, 16, 16
             });
         }
@@ -196,8 +249,22 @@ void VisualNode::draw(sf::RenderTexture& surface) {
             });
         }
 
+        if (_triangleButton.getGlobalBounds().contains(_mPos.x, _mPos.y)) {
+            _triangleButton.setTextureRect({
+                32, 0, 16, 16    
+            });
+        } else {
+            _triangleButton.setTextureRect({
+                32, 16, 16, 16
+            });
+        }
+
         surface.draw(_plusButton);
+        surface.draw(_leftPlusButton);
         if (hasParent()) surface.draw(_minusButton);
+        if (Settings::enableTriangles && hasParent() && getParent()->getChildren().size() == 1) {
+            surface.draw(_triangleButton);
+        }
     }
 
     if (_hasMovement && _endPointNode != nullptr && _endPointNode->isActive()) {
@@ -292,7 +359,9 @@ void VisualNode::mouseButtonPressed(const int mx, const int my, const int button
 
     _mouseDown = true;
 
-    if (_plusButton.getGlobalBounds().contains(mx, my) || (hasParent() && _minusButton.getGlobalBounds().contains(mx, my))) {
+    if (_plusButton.getGlobalBounds().contains(mx, my) || _leftPlusButton.getGlobalBounds().contains(mx, my)
+        || (hasParent() && _minusButton.getGlobalBounds().contains(mx, my))
+        || (Settings::enableTriangles && hasParent() && getParent()->getChildren().size() == 1 && _triangleButton.getGlobalBounds().contains(mx, my))) {
         _clickingButtons = true;
     }
 }
@@ -308,8 +377,19 @@ void VisualNode::mouseButtonReleased(const int mx, const int my, const int butto
     if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Key::LControl) && !isSelectingMovement()) {
         if (_plusButton.getGlobalBounds().contains(mx, my) && getBounds().contains(_mPos.x, _mPos.y) && button == sf::Mouse::Left) {
             addChild();
+        } else if (_leftPlusButton.getGlobalBounds().contains(mx, my) && getBounds().contains(_mPos.x, _mPos.y) && button == sf::Mouse::Left) {
+            addChild(true);
         } else if (hasParent() && _minusButton.getGlobalBounds().contains(mx, my) && getBounds().contains(_mPos.x, _mPos.y) && button == sf::Mouse::Left) {
             hide();
+        } else if (Settings::enableTriangles && hasParent() && getParent()->getChildren().size() == 1 && _triangleButton.getGlobalBounds().contains(_mPos.x, _mPos.y) && button == sf::Mouse::Left) {
+            _drawTriangle = !_drawTriangle;
+            if (_drawTriangle && !Settings::showTermLines) {
+                move({ 0, getPosition().y - getParent()->getPosition().y });
+                move({ 0, pe::UI::percentToScreenHeight(Settings::nontermVerticalDistance) });
+            } else if (!_drawTriangle && !Settings::showTermLines) {
+                //move({ 0, getPosition().y - getParent()->getPosition().y });
+                //move({ 0, pe::UI::percentToScreenHeight(Settings::termVerticalDistance) });
+            }
         } else if (getBounds().contains(_mPos.x, _mPos.y) && button == sf::Mouse::Right) {
             const auto& menu = pe::UI::getMenu("subscriptMenu");
             menu->open();

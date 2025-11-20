@@ -55,7 +55,7 @@ private:
 
     std::vector<s_p<VisualNode>> _children;
 
-    void addChild();
+    void addChild(bool left = false);
 
     VisualNode* _parent = nullptr;
 
@@ -64,7 +64,9 @@ private:
     void connectToParent(sf::RenderTexture& surface);
 
     sf::RectangleShape _plusButton;
+    sf::RectangleShape _leftPlusButton;
     sf::RectangleShape _minusButton;
+    sf::RectangleShape _triangleButton;
     bool _clickingButtons = false;
 
     sf::Text _subscript;
@@ -78,6 +80,8 @@ private:
     float _curveHeight = 0.f;
 
     float _movementLineVertex = 0;
+
+    bool _drawTriangle = false;
 };
 
 #endif

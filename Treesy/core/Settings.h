@@ -17,11 +17,16 @@ public:
     static inline sf::Color termColor = sf::Color(0x008000FF);
 
     static inline float nontermVerticalDistance = 8.f;
-    static inline float termVerticalDistance = showTermLines ? nontermVerticalDistance : 6.f;
+    static inline float termVerticalDistance = 6.f;
+
+    static float getTermDistance() {
+        return showTermLines ? nontermVerticalDistance : termVerticalDistance;
+    };
+
+    static inline bool enableTriangles = false;
 
     static inline float horzSpacing = 0.f;
 private:
-
 };
 
 #endif
