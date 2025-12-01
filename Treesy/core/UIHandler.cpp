@@ -82,16 +82,14 @@ void UIHandlerImpl::init() {
     colorsMenu->addComponent(new_s_p(pe::Button, ("termColor", 0, 0, 9, 3, "Terminals", this)));
     colorsMenu->addComponent(new_s_p(pe::Button, ("nonTermColor", 0, 0, 9, 3, "Non-terminals", this)));
 
-    colorsMenu->addComponent(new_s_p(pe::Button, ("close_colors", 7, 72, 6, 3, "Done", this)));
+    colorsMenu->addComponent(new_s_p(pe::Button, ("close_colors", 7, 72, 6, 3, "Back", this)));
 
-    auto colorsPanel = new_s_p(pe::Panel, ("colorsPanel", 7, 60, 13, 30, "Colors", true));
-    colorsPanel->setTextPosition(50.f, 12.f);
-    colorsMenu->addComponent(colorsPanel);
-    colorsPanel->attachAt("bgColor", { 50, 25 });
-    colorsPanel->attachAt("lineColor", { 50, 38 });
-    colorsPanel->attachAt("termColor", { 50, 51 });
-    colorsPanel->attachAt("nonTermColor", { 50, 64 });
-    colorsPanel->attachAt("close_colors", { 50, 80 });
+    colorsMenu->addComponent(settingsPanel);
+    settingsPanel->attachAt("bgColor", { 50, 25 });
+    settingsPanel->attachAt("lineColor", { 50, 38 });
+    settingsPanel->attachAt("termColor", { 50, 51 });
+    settingsPanel->attachAt("nonTermColor", { 50, 64 });
+    settingsPanel->attachAt("close_colors", { 50, 80 });
     //
 
     // Color
@@ -102,7 +100,7 @@ void UIHandlerImpl::init() {
     colorMenu->addComponent(new_s_p(pe::Slider, ("c_alpha_slider", 0, 0, { 8, 1.f }, { 1.f, 2.f }, "Alpha", this)));
     colorMenu->addComponent(new_s_p(pe::Button, ("close_color", 0, 0, 8, 3, "Close", this)));
 
-    auto colorPanel = new_s_p(pe::Panel, ("colorPanel", 50, 50, 13, 40, "", true));
+    auto colorPanel = new_s_p(pe::Panel, ("colorPanel", 80, 50, 13, 40, "", true));
     colorPanel->setTextPosition(50.f, 8.f);
     colorPanel->attachAt("c_red_slider", { 50, 15 });
     colorPanel->attachAt("c_green_slider", { 50, 35 });
