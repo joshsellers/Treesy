@@ -23,7 +23,7 @@ public:
         return showTermLines ? nontermVerticalDistance : termVerticalDistance;
     };
 
-    static inline bool enableTriangles = false;
+    static inline bool enableTriangles = true;
 
     static inline float horzSpacing = 0.f;
 private:

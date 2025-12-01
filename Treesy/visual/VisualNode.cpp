@@ -76,7 +76,7 @@ sf::Vector2f VisualNode::getPosition() const {
 
 
 void VisualNode::addChild(bool left) {
-    if (!hasChildren() && hasParent() && getParent()->getChildren().size() == 1) move({ 0, pe::UI::percentToScreenHeight(Settings::getTermDistance()) });
+    if (!hasChildren() && hasParent() && !_drawTriangle && getParent()->getChildren().size() == 1) move({ 0, pe::UI::percentToScreenHeight(Settings::getTermDistance()) });
     const auto& child = VisualTree::addChild(this);
 
     if (left) {
@@ -84,6 +84,8 @@ void VisualNode::addChild(bool left) {
     } else {
         _children.push_back(child);
     }
+
+    _drawTriangle = false;
 }
 
 void VisualNode::connectToParent(sf::RenderTexture& surface) {
@@ -150,14 +152,14 @@ void VisualNode::update() {
 
     _children.erase(std::remove_if(_children.begin(), _children.end(), [](s_p<VisualNode> node) {return !node->isActive(); }), _children.end());
 
-    if (hasParent() && !_drawTriangle) {
+    if (hasParent()) {
         const float dist = getPosition().y - _parent->getPosition().y;
         if (dist <= pe::UI::percentToScreenHeight(Settings::nontermVerticalDistance)) {
-            if (hasChildren() || getParent()->getChildren().size() > 1 || hasSubscript()) {
+            if (hasChildren() || getParent()->getChildren().size() > 1 || hasSubscript() || _drawTriangle) {
                 move({ 0, pe::UI::percentToScreenHeight(Settings::getTermDistance()) });
             }
         } else if (dist >= pe::UI::percentToScreenHeight(Settings::nontermVerticalDistance)) {
-            if (!hasChildren() && getParent()->getChildren().size() == 1 && !hasSubscript()) {
+            if (!hasChildren() && getParent()->getChildren().size() == 1 && !hasSubscript() && !_drawTriangle) {
                 move({ 0, -pe::UI::percentToScreenHeight(Settings::getTermDistance()) });
             }
         }
@@ -219,7 +221,7 @@ void VisualNode::draw(sf::RenderTexture& surface) {
         _plusButton.setPosition(_pos.x + getBounds().width - _plusButton.getSize().x, _pos.y + getBounds().height - _plusButton.getSize().y);
         _leftPlusButton.setPosition(_pos.x, _pos.y + getBounds().height - _plusButton.getSize().y);
         _minusButton.setPosition(_pos.x, getBounds().top);
-        _triangleButton.setPosition(_pos.x + _minusButton.getSize().x, _pos.y);
+        _triangleButton.setPosition(_pos.x + getBounds().width - _triangleButton.getSize().x, getBounds().top);
 
         if (_plusButton.getGlobalBounds().contains(_mPos.x, _mPos.y)) {
             _plusButton.setTextureRect({
@@ -253,18 +255,18 @@ void VisualNode::draw(sf::RenderTexture& surface) {
 
         if (_triangleButton.getGlobalBounds().contains(_mPos.x, _mPos.y)) {
             _triangleButton.setTextureRect({
-                32, 0, 16, 16    
+                32, 16, 16, 16    
             });
         } else {
             _triangleButton.setTextureRect({
-                32, 16, 16, 16
+                32, 0, 16, 16
             });
         }
 
         surface.draw(_plusButton);
         surface.draw(_leftPlusButton);
         if (hasParent()) surface.draw(_minusButton);
-        if (Settings::enableTriangles && hasParent() && getParent()->getChildren().size() == 1) {
+        if (Settings::enableTriangles && hasParent() && getParent()->getChildren().size() == 1 && !hasChildren()) {
             surface.draw(_triangleButton);
         }
     }
@@ -385,13 +387,6 @@ void VisualNode::mouseButtonReleased(const int mx, const int my, const int butto
             hide();
         } else if (Settings::enableTriangles && hasParent() && getParent()->getChildren().size() == 1 && _triangleButton.getGlobalBounds().contains(_mPos.x, _mPos.y) && button == sf::Mouse::Left) {
             _drawTriangle = !_drawTriangle;
-            if (_drawTriangle && !Settings::showTermLines) {
-                move({ 0, getPosition().y - getParent()->getPosition().y });
-                move({ 0, pe::UI::percentToScreenHeight(Settings::nontermVerticalDistance) });
-            } else if (!_drawTriangle && !Settings::showTermLines) {
-                //move({ 0, getPosition().y - getParent()->getPosition().y });
-                //move({ 0, pe::UI::percentToScreenHeight(Settings::termVerticalDistance) });
-            }
         } else if (getBounds().contains(_mPos.x, _mPos.y) && button == sf::Mouse::Right) {
             const auto& menu = pe::UI::getMenu("subscriptMenu");
             menu->open();
