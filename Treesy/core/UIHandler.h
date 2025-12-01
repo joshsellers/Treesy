@@ -6,14 +6,16 @@
 
 #include "../../PennyEngine/ui/components/ButtonListener.h"
 #include "../../PennyEngine/ui/components/SliderListener.h"
+#include "../../PennyEngine/ui/components/ToggleButtonListener.h"
 #include "Settings.h"
 
-class UIHandlerImpl : public pe::ButtonListener, public pe::SliderListener {
+class UIHandlerImpl : public pe::ButtonListener, public pe::SliderListener, public pe::ToggleButtonListener {
 public:
     void init();
 protected:
     virtual void buttonPressed(std::string buttonId); 
     virtual void sliderMoved(std::string sliderId, float value);
+    virtual void toggleButtonPressed(std::string buttonid, bool newValue);
 private:
     void saveImage(std::string path);
 

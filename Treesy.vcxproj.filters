@@ -282,6 +282,9 @@
     <ClCompile Include="Treesy\core\Versioning.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="PennyEngine\ui\components\ToggleButton.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Treesy.licenseheader" />
@@ -427,6 +430,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Treesy\core\Versioning.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PennyEngine\ui\components\ToggleButtonListener.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PennyEngine\ui\components\ToggleButton.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

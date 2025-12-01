@@ -49,6 +49,25 @@ namespace pe {
     inline ComponentAppearanceConfig NODE_CONFIG = TEXTFIELD_CONFIG.offsetBy(0, 16);
     inline ComponentAppearanceConfig NODE_HOVER_CONFIG = TEXTFIELD_HOVER_CONFIG.offsetBy(0, 16);
     inline ComponentAppearanceConfig NODE_ARMED_CONFIG = TEXTFIELD_ARMED_CONFIG.offsetBy(0, 16);
+
+    inline ComponentAppearanceConfig TOGGLE_ON_CONFIG = {
+        0.09f,
+        {80, 80, 3, 3},
+        {80, 84, 3, 1},
+        {80, 86, 3, 3},
+        {84, 80, 1, 3},
+        {84, 84, 1, 1},
+        {84, 86, 1, 3},
+        {86, 80, 3, 3},
+        {86, 84, 3, 1},
+        {86, 86, 3, 3}
+    };
+    inline ComponentAppearanceConfig TOGGLE_ON_HOVER_CONFIG = TOGGLE_ON_CONFIG.offsetBy(16, 0);
+    inline ComponentAppearanceConfig TOGGLE_ON_CLICKED_CONFIG = TOGGLE_ON_CONFIG.offsetBy(32, 0);
+
+    inline ComponentAppearanceConfig TOGGLE_OFF_CONFIG = TOGGLE_ON_CONFIG.offsetBy(0, 16);
+    inline ComponentAppearanceConfig TOGGLE_OFF_HOVER_CONFIG = TOGGLE_OFF_CONFIG.offsetBy(16, 0);
+    inline ComponentAppearanceConfig TOGGLE_OFF_CLICKED_CONFIG = TOGGLE_OFF_CONFIG.offsetBy(32, 0);
 }
 
 #endif

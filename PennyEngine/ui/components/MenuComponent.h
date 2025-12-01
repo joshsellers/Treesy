@@ -17,7 +17,7 @@
 namespace pe {
     class MenuComponent {
     public:
-        MenuComponent(const std::string id, float x, float y, float width, float height, bool autoCenter = true, ComponentAppearanceConfig appearance = BASE_COMPONENT_CONFIG);
+        MenuComponent(const std::string id, float x, float y, float width, float height, bool autoCenter = true, ComponentAppearanceConfig appearance = BASE_COMPONENT_CONFIG, bool square = false);
 
         virtual void show();
         virtual void hide();

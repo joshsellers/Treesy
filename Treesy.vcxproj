@@ -151,6 +151,7 @@
     <ClCompile Include="PennyEngine\ui\components\Slider.cpp" />
     <ClCompile Include="PennyEngine\ui\components\SliderHandle.cpp" />
     <ClCompile Include="PennyEngine\ui\components\TextField.cpp" />
+    <ClCompile Include="PennyEngine\ui\components\ToggleButton.cpp" />
     <ClCompile Include="PennyEngine\ui\Menu.cpp" />
     <ClCompile Include="PennyEngine\ui\UI.cpp" />
     <ClCompile Include="PennyEngine\ui\UIManager.cpp" />
@@ -260,6 +261,8 @@
     <ClInclude Include="PennyEngine\ui\components\SliderHandle.h" />
     <ClInclude Include="PennyEngine\ui\components\SliderListener.h" />
     <ClInclude Include="PennyEngine\ui\components\TextField.h" />
+    <ClInclude Include="PennyEngine\ui\components\ToggleButton.h" />
+    <ClInclude Include="PennyEngine\ui\components\ToggleButtonListener.h" />
     <ClInclude Include="PennyEngine\ui\Menu.h" />
     <ClInclude Include="PennyEngine\ui\UI.h" />
     <ClInclude Include="PennyEngine\ui\UIManager.h" />

@@ -6,10 +6,10 @@
 #include "../../core/Logger.h"
 #include "Panel.h"
 
-pe::MenuComponent::MenuComponent(const std::string id, float x, float y, float width, float height, bool autoCenter, ComponentAppearanceConfig appearance) : 
+pe::MenuComponent::MenuComponent(const std::string id, float x, float y, float width, float height, bool autoCenter, ComponentAppearanceConfig appearance, bool square) :
     _id(id), _appearance(appearance) {
     _pos = UI::percentToScreenPos(x, y);
-    _size = UI::percentToScreenDimensions(width, height);
+    _size = square ? sf::Vector2f(UI::percentToScreenWidth(width), UI::percentToScreenWidth(height)) : UI::percentToScreenDimensions(width, height);
 
     _text.setFont(PennyEngine::getFont());
 

@@ -7,6 +7,7 @@
 #include "../../PennyEngine/ui/components/Panel.h"
 #include "../../PennyEngine/ui/components/Button.h"
 #include "../../PennyEngine/ui/components/Slider.h"
+#include "../../PennyEngine/ui/components/ToggleButton.h"
 #include "../../PennyEngine/core/Util.h"
 #include <Windows.h>
 #include "../../PennyEngine/core/Logger.h"
@@ -15,6 +16,7 @@
 #include "Persistence.h"
 
 void UIHandlerImpl::init() {
+    // Subscripts
     auto subscriptMenu = pe::UI::addMenu("subscriptMenu");
     subscriptMenu->addComponent(new_s_p(pe::TextField, ("subscriptField", 50, 38, 9, 4, "")));
     subscriptMenu->addComponent(new_s_p(pe::Button, ("close_subscriptMenu", 50, 44, 6, 3, "Done", this)));
@@ -23,7 +25,9 @@ void UIHandlerImpl::init() {
     subscriptMenu->addComponent(subscriptPanel);
     subscriptPanel->attach(subscriptMenu->getComponent("subscriptField"));
     subscriptPanel->attach(subscriptMenu->getComponent("close_subscriptMenu"));
+    //
 
+    // Main
     auto mainMenu = pe::UI::addMenu("main");
     const sf::Vector2f posOffset = { -3, 0 };
     mainMenu->addComponent(new_s_p(pe::Button, ("load", 10 + posOffset.x, 13 + posOffset.y, 8, 3, "Open tree", this)));
@@ -41,46 +45,73 @@ void UIHandlerImpl::init() {
     mainPanel->attach(mainMenu->getComponent("open_settings"));
     mainPanel->attach(mainMenu->getComponent("exit"));
     mainMenu->open();
+    //
 
+    // Settings
     auto settingsMenu = pe::UI::addMenu("settings");
-    /*settingsMenu->addComponent(new_s_p(pe::Slider, ("widthSlider", 7, 53.f, { 8, 1.f }, { 1.f, 2.f }, "Horizontal Spacing", this)));
-    pe::Slider* slider = dynamic_cast<pe::Slider*>(settingsMenu->getComponent("widthSlider").get());
-    slider->setValue(0.f);
-    slider->getText().setCharacterSize(pe::UI::percentToScreenWidth(1.f));*/
+    settingsMenu->addComponent(new_s_p(pe::Slider, ("widthSlider", 7, 53.f, { 8, 1.f }, { 1.f, 2.f }, "Horizontal Spacing", this)));
+    pe::Slider* horzslider = dynamic_cast<pe::Slider*>(settingsMenu->getComponent("widthSlider").get());
+    //horzslider->setValue(0.f);
+    horzslider->getText().setCharacterSize(pe::UI::percentToScreenWidth(1.f));
 
-    settingsMenu->addComponent(new_s_p(pe::Button, ("bgColor", 0, 0, 9, 3, "Background", this)));
-    settingsMenu->addComponent(new_s_p(pe::Button, ("lineColor", 0, 0, 9, 3, "Lines", this)));
-    settingsMenu->addComponent(new_s_p(pe::Button, ("termColor", 0, 0, 9, 3, "Terminals", this)));
-    settingsMenu->addComponent(new_s_p(pe::Button, ("nonTermColor", 0, 0, 9, 3, "Non-terminals", this)));
+    //settingsMenu->addComponent(new_s_p(pe::Slider, ("heightSlider", 0, 0, { 8.f, 1.f }, { 1.f, 2.f }, "Vertical Spacing", this))); 
+    //pe::Slider* vertslider = dynamic_cast<pe::Slider*>(settingsMenu->getComponent("heightSlider").get());
+    ////vertslider->setValue(0.f);
+    //vertslider->getText().setCharacterSize(pe::UI::percentToScreenWidth(1.f));
 
-    settingsMenu->addComponent(new_s_p(pe::Button, ("close_settings", 7, 72, 6, 3, "Done", this)));
+    settingsMenu->addComponent(new_s_p(pe::ToggleButton, ("termLines", 0, 0, 0.6f, 0.35f, "Terminal Lines: ", this)));
+    settingsMenu->addComponent(new_s_p(pe::Button, ("open_colors", 0, 0, 8, 3, "Colors", this)));
+    settingsMenu->addComponent(new_s_p(pe::Button, ("close_settings", 0, 0, 8, 3, "Close", this)));
 
-    auto settingsPanel = new_s_p(pe::Panel, ("settingsPanel", 7, 60, 13, 30, "Colors", true));
-    settingsPanel->setTextPosition(50.f, 14.f);
+    auto settingsPanel = new_s_p(pe::Panel, ("settingsPanel", 7, 60, 13, 30, "Settings", true));
+    settingsPanel->setTextPosition(50.f, 12.f);
     settingsMenu->addComponent(settingsPanel);
-    //settingsPanel->attachAt("widthSlider", { 50, 10 });
-    settingsPanel->attachAt("bgColor", { 50, 25 });
-    settingsPanel->attachAt("lineColor", { 50, 38 });
-    settingsPanel->attachAt("termColor", { 50, 51 });
-    settingsPanel->attachAt("nonTermColor", { 50, 64 });
-    settingsPanel->attachAt("close_settings", { 50, 80 });
+    settingsPanel->attachAt("widthSlider", { 50, 22 });
+    settingsPanel->attachAt("heightSlider", { 50, 37 });
+    settingsPanel->attachAt("termLines", { 82, 50 });
+    settingsPanel->attachAt("open_colors", { 50, 71 });
+    settingsPanel->attachAt("close_settings", { 50, 84 });
+    //
 
-    auto colorMenu = pe::UI::addMenu("colors");
+    // Colors
+    auto colorsMenu = pe::UI::addMenu("colors");
+    settingsMenu->addChild(colorsMenu);
+
+    colorsMenu->addComponent(new_s_p(pe::Button, ("bgColor", 0, 0, 9, 3, "Background", this)));
+    colorsMenu->addComponent(new_s_p(pe::Button, ("lineColor", 0, 0, 9, 3, "Lines", this)));
+    colorsMenu->addComponent(new_s_p(pe::Button, ("termColor", 0, 0, 9, 3, "Terminals", this)));
+    colorsMenu->addComponent(new_s_p(pe::Button, ("nonTermColor", 0, 0, 9, 3, "Non-terminals", this)));
+
+    colorsMenu->addComponent(new_s_p(pe::Button, ("close_colors", 7, 72, 6, 3, "Done", this)));
+
+    auto colorsPanel = new_s_p(pe::Panel, ("colorsPanel", 7, 60, 13, 30, "Colors", true));
+    colorsPanel->setTextPosition(50.f, 12.f);
+    colorsMenu->addComponent(colorsPanel);
+    colorsPanel->attachAt("bgColor", { 50, 25 });
+    colorsPanel->attachAt("lineColor", { 50, 38 });
+    colorsPanel->attachAt("termColor", { 50, 51 });
+    colorsPanel->attachAt("nonTermColor", { 50, 64 });
+    colorsPanel->attachAt("close_colors", { 50, 80 });
+    //
+
+    // Color
+    auto colorMenu = pe::UI::addMenu("color");
     colorMenu->addComponent(new_s_p(pe::Slider, ("c_red_slider", 0, 0, { 8, 1.f }, { 1.f, 2.f }, "Red", this)));
     colorMenu->addComponent(new_s_p(pe::Slider, ("c_green_slider", 0, 0, { 8, 1.f }, { 1.f, 2.f }, "Green", this)));
     colorMenu->addComponent(new_s_p(pe::Slider, ("c_blue_slider", 0, 0, { 8, 1.f }, { 1.f, 2.f }, "Blue", this)));
     colorMenu->addComponent(new_s_p(pe::Slider, ("c_alpha_slider", 0, 0, { 8, 1.f }, { 1.f, 2.f }, "Alpha", this)));
-    colorMenu->addComponent(new_s_p(pe::Button, ("close_colors", 0, 0, 8, 3, "Close", this)));
+    colorMenu->addComponent(new_s_p(pe::Button, ("close_color", 0, 0, 8, 3, "Close", this)));
 
-    auto colorsPanel = new_s_p(pe::Panel, ("colorPanel", 50, 50, 13, 40, "", true));
-    colorsPanel->setTextPosition(50.f, 8.f);
-    colorsPanel->attachAt("c_red_slider", { 50, 15 });
-    colorsPanel->attachAt("c_green_slider", { 50, 35 });
-    colorsPanel->attachAt("c_blue_slider", { 50, 55 });
-    colorsPanel->attachAt("c_alpha_slider", { 50, 75 });
-    colorsPanel->attachAt("close_colors", { 50, 95 });
+    auto colorPanel = new_s_p(pe::Panel, ("colorPanel", 50, 50, 13, 40, "", true));
+    colorPanel->setTextPosition(50.f, 8.f);
+    colorPanel->attachAt("c_red_slider", { 50, 15 });
+    colorPanel->attachAt("c_green_slider", { 50, 35 });
+    colorPanel->attachAt("c_blue_slider", { 50, 55 });
+    colorPanel->attachAt("c_alpha_slider", { 50, 75 });
+    colorPanel->attachAt("close_color", { 50, 95 });
 
-    colorMenu->addComponent(colorsPanel);
+    colorMenu->addComponent(colorPanel);
+    //
 }
 
 void UIHandler::init() {
@@ -107,19 +138,19 @@ void UIHandlerImpl::buttonPressed(std::string buttonId) {
         VisualTree::reset();
         Persistence::load(path);
     } else if (buttonId == "bgColor") {
-        pe::UI::getMenu("colors")->open();
+        pe::UI::getMenu("color")->open();
         _selectedColor = &Settings::bgColor;
         setColorSliders();
     } else if (buttonId == "lineColor") {
-        pe::UI::getMenu("colors")->open();
+        pe::UI::getMenu("color")->open();
         _selectedColor = &Settings::lineColor;
         setColorSliders();
     } else if (buttonId == "termColor") {
-        pe::UI::getMenu("colors")->open();
+        pe::UI::getMenu("color")->open();
         _selectedColor = &Settings::termColor;
         setColorSliders();
     } else if (buttonId == "nonTermColor") {
-        pe::UI::getMenu("colors")->open();
+        pe::UI::getMenu("color")->open();
         _selectedColor = &Settings::nonTermColor;
         setColorSliders();
     }
@@ -127,7 +158,9 @@ void UIHandlerImpl::buttonPressed(std::string buttonId) {
 
 void UIHandlerImpl::sliderMoved(std::string sliderId, float value) {
     if (sliderId == "widthSlider") {
-        Settings::horzSpacing = value * 500.f;
+        Settings::horzSpacing = (value - 0.5f) * 500.f;
+    } else if (sliderId == "heightSlider") {
+        Settings::nontermVerticalDistance = (value) * 8.f;
     } else if (pe::stringStartsWith(sliderId, "c_")) {
         sf::Uint8* channel = nullptr;
         std::string channelStr = pe::splitString(sliderId, "_")[1];
@@ -142,17 +175,21 @@ void UIHandlerImpl::sliderMoved(std::string sliderId, float value) {
     }
 }
 
+void UIHandlerImpl::toggleButtonPressed(std::string buttonid, bool newValue) {
+    if (buttonid == "termLines") Settings::showTermLines = newValue;
+}
+
 void UIHandlerImpl::setColorSliders() {
-    pe::Slider* slider = dynamic_cast<pe::Slider*>(pe::UI::getMenu("colors")->getComponent("c_red_slider").get());
+    pe::Slider* slider = dynamic_cast<pe::Slider*>(pe::UI::getMenu("color")->getComponent("c_red_slider").get());
     slider->setValue(_selectedColor->r / 255.f);
 
-    slider = dynamic_cast<pe::Slider*>(pe::UI::getMenu("colors")->getComponent("c_green_slider").get());
+    slider = dynamic_cast<pe::Slider*>(pe::UI::getMenu("color")->getComponent("c_green_slider").get());
     slider->setValue(_selectedColor->g / 255.f);
 
-    slider = dynamic_cast<pe::Slider*>(pe::UI::getMenu("colors")->getComponent("c_blue_slider").get());
+    slider = dynamic_cast<pe::Slider*>(pe::UI::getMenu("color")->getComponent("c_blue_slider").get());
     slider->setValue(_selectedColor->b / 255.f);
 
-    slider = dynamic_cast<pe::Slider*>(pe::UI::getMenu("colors")->getComponent("c_alpha_slider").get());
+    slider = dynamic_cast<pe::Slider*>(pe::UI::getMenu("color")->getComponent("c_alpha_slider").get());
     slider->setValue(_selectedColor->a / 255.f);
 }
 
