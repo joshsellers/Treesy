@@ -42,6 +42,7 @@ void PersistenceImpl::save(std::string path) {
         if (node->hasMovement()) write(out, "endPointNode: " + node->_endPointNode->getIdentifier());
         write(out, "curveAngle: " + std::to_string(node->_curveAngle));
         write(out, "curveHeight: " + std::to_string(node->_curveHeight));
+        write(out, "triangle: " + std::string(node->_drawTriangle ? "true" : "false"));
         write(out, "}");
     }
 
@@ -132,6 +133,7 @@ void PersistenceImpl::createNode(std::vector<std::string> lines, bool convertCoo
     std::string endPointNode = "";
     float curveAngle = 0.f;
     float curveHeight = 0.f;
+    bool drawTriangle = false;
 
     for (const auto& line : lines) {
         const std::vector tokens = tokenize(line);
@@ -151,6 +153,7 @@ void PersistenceImpl::createNode(std::vector<std::string> lines, bool convertCoo
             else if (var == "endPointNode") endPointNode = tokens.at(2);
             else if (var == "curveAngle") curveAngle = std::stof(tokens.at(2));
             else if (var == "curveHeight") curveHeight = std::stof(tokens.at(2));
+            else if (var == "triangle") drawTriangle = tokens.at(2) == "1";
         }
     }
 
@@ -172,6 +175,7 @@ void PersistenceImpl::createNode(std::vector<std::string> lines, bool convertCoo
     node->_hasMovement = hasMovement;
     node->_curveAngle = curveAngle;
     node->_curveHeight = curveHeight;
+    node->_drawTriangle = drawTriangle;
     VisualTree::_instance._nodes.push_back(node);
     VisualTree::_instance._renderNodes.push_back(node);
 
