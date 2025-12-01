@@ -36,7 +36,8 @@ void ProgramManager::draw(sf::RenderTexture& surface) {
     bg.setSize(PennyEngine::getCamera().getSize());
     const sf::Vector2f cameraPos = PennyEngine::getCamera().getCenter();
     bg.setPosition(cameraPos.x - bg.getSize().x / 2.f, cameraPos.y - bg.getSize().y / 2.f);
-    bg.setFillColor(Settings::bgColor);
+    const sf::Color bgColor(Settings::bgColor.r, Settings::bgColor.g, Settings::bgColor.b, Settings::bgColor.a == 0 ? 0xFF : Settings::bgColor.a);
+    bg.setFillColor(bgColor);
     surface.draw(bg);
 
     VisualTree::draw(surface);

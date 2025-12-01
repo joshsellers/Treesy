@@ -28,6 +28,8 @@ namespace pe {
 
         void attach(s_p<MenuComponent> component);
         void attach(std::string identifier);
+        void attachAt(s_p<MenuComponent> component, sf::Vector2f pos);
+        void attachAt(std::string identifier, sf::Vector2f pos);
     protected:
         void update();
         void draw(sf::RenderTexture& surface);

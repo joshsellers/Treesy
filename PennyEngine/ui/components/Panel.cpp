@@ -44,6 +44,27 @@ void pe::Panel::attach(std::string identifier) {
     Logger::log("Panel could not find component with id \"" + identifier + "\"");
 }
 
+void pe::Panel::attachAt(s_p<MenuComponent> component, sf::Vector2f pos) {
+    attach(component);
+    const sf::Vector2f convPos = { _pos.x + _size.x * (pos.x / 100.f), _pos.y + _size.y * (pos.y / 100.f) };
+    const sf::Vector2f delta = convPos - sf::Vector2f(
+        component->getBounds().left + component->getBounds().width / 2.f, component->getBounds().top + component->getBounds().height / 2.f
+    );
+    component->move(delta);
+}
+
+void pe::Panel::attachAt(std::string identifier, sf::Vector2f pos) {
+    for (const auto& menu : UI::getMenus()) {
+        const auto& component = menu->getComponent(identifier, true);
+        if (component != nullptr) {
+            attachAt(component, pos);
+            return;
+        }
+    }
+
+    Logger::log("Panel could not find component with id \"" + identifier + "\"");
+}
+
 void pe::Panel::update() {
 }
 

@@ -43,18 +43,44 @@ void UIHandlerImpl::init() {
     mainMenu->open();
 
     auto settingsMenu = pe::UI::addMenu("settings");
-    settingsMenu->addComponent(new_s_p(pe::Slider, ("widthSlider", 7, 53.f, {8, 1.f}, {1.f, 2.f}, "Horizontal Spacing", this)));
+    /*settingsMenu->addComponent(new_s_p(pe::Slider, ("widthSlider", 7, 53.f, { 8, 1.f }, { 1.f, 2.f }, "Horizontal Spacing", this)));
     pe::Slider* slider = dynamic_cast<pe::Slider*>(settingsMenu->getComponent("widthSlider").get());
     slider->setValue(0.f);
-    slider->getText().setCharacterSize(pe::UI::percentToScreenWidth(1.f));
+    slider->getText().setCharacterSize(pe::UI::percentToScreenWidth(1.f));*/
+
+    settingsMenu->addComponent(new_s_p(pe::Button, ("bgColor", 0, 0, 9, 3, "Background", this)));
+    settingsMenu->addComponent(new_s_p(pe::Button, ("lineColor", 0, 0, 9, 3, "Lines", this)));
+    settingsMenu->addComponent(new_s_p(pe::Button, ("termColor", 0, 0, 9, 3, "Terminals", this)));
+    settingsMenu->addComponent(new_s_p(pe::Button, ("nonTermColor", 0, 0, 9, 3, "Non-terminals", this)));
 
     settingsMenu->addComponent(new_s_p(pe::Button, ("close_settings", 7, 72, 6, 3, "Done", this)));
 
-    auto settingsPanel = new_s_p(pe::Panel, ("settingsPanel", 7, 60, 13, 30, "Settings", true));
+    auto settingsPanel = new_s_p(pe::Panel, ("settingsPanel", 7, 60, 13, 30, "Colors", true));
     settingsPanel->setTextPosition(50.f, 14.f);
     settingsMenu->addComponent(settingsPanel);
-    settingsPanel->attach(settingsMenu->getComponent("widthSlider"));
-    settingsPanel->attach(settingsMenu->getComponent("close_settings"));
+    //settingsPanel->attachAt("widthSlider", { 50, 10 });
+    settingsPanel->attachAt("bgColor", { 50, 25 });
+    settingsPanel->attachAt("lineColor", { 50, 38 });
+    settingsPanel->attachAt("termColor", { 50, 51 });
+    settingsPanel->attachAt("nonTermColor", { 50, 64 });
+    settingsPanel->attachAt("close_settings", { 50, 80 });
+
+    auto colorMenu = pe::UI::addMenu("colors");
+    colorMenu->addComponent(new_s_p(pe::Slider, ("c_red_slider", 0, 0, { 8, 1.f }, { 1.f, 2.f }, "Red", this)));
+    colorMenu->addComponent(new_s_p(pe::Slider, ("c_green_slider", 0, 0, { 8, 1.f }, { 1.f, 2.f }, "Green", this)));
+    colorMenu->addComponent(new_s_p(pe::Slider, ("c_blue_slider", 0, 0, { 8, 1.f }, { 1.f, 2.f }, "Blue", this)));
+    colorMenu->addComponent(new_s_p(pe::Slider, ("c_alpha_slider", 0, 0, { 8, 1.f }, { 1.f, 2.f }, "Alpha", this)));
+    colorMenu->addComponent(new_s_p(pe::Button, ("close_colors", 0, 0, 8, 3, "Close", this)));
+
+    auto colorsPanel = new_s_p(pe::Panel, ("colorPanel", 50, 50, 13, 40, "", true));
+    colorsPanel->setTextPosition(50.f, 8.f);
+    colorsPanel->attachAt("c_red_slider", { 50, 15 });
+    colorsPanel->attachAt("c_green_slider", { 50, 35 });
+    colorsPanel->attachAt("c_blue_slider", { 50, 55 });
+    colorsPanel->attachAt("c_alpha_slider", { 50, 75 });
+    colorsPanel->attachAt("close_colors", { 50, 95 });
+
+    colorMenu->addComponent(colorsPanel);
 }
 
 void UIHandler::init() {
@@ -80,13 +106,54 @@ void UIHandlerImpl::buttonPressed(std::string buttonId) {
         const std::string path = UIHandler::getLoadPath();
         VisualTree::reset();
         Persistence::load(path);
+    } else if (buttonId == "bgColor") {
+        pe::UI::getMenu("colors")->open();
+        _selectedColor = &Settings::bgColor;
+        setColorSliders();
+    } else if (buttonId == "lineColor") {
+        pe::UI::getMenu("colors")->open();
+        _selectedColor = &Settings::lineColor;
+        setColorSliders();
+    } else if (buttonId == "termColor") {
+        pe::UI::getMenu("colors")->open();
+        _selectedColor = &Settings::termColor;
+        setColorSliders();
+    } else if (buttonId == "nonTermColor") {
+        pe::UI::getMenu("colors")->open();
+        _selectedColor = &Settings::nonTermColor;
+        setColorSliders();
     }
 }
 
 void UIHandlerImpl::sliderMoved(std::string sliderId, float value) {
     if (sliderId == "widthSlider") {
         Settings::horzSpacing = value * 500.f;
+    } else if (pe::stringStartsWith(sliderId, "c_")) {
+        sf::Uint8* channel = nullptr;
+        std::string channelStr = pe::splitString(sliderId, "_")[1];
+        if (channelStr == "red") channel = &_selectedColor->r;
+        else if (channelStr == "green") channel = &_selectedColor->g;
+        else if (channelStr == "blue") channel = &_selectedColor->b;
+        else if (channelStr == "alpha") channel = &_selectedColor->a;
+
+        if (channel != nullptr) {
+            *channel = (sf::Uint8)(value * 255.f);
+        }
     }
+}
+
+void UIHandlerImpl::setColorSliders() {
+    pe::Slider* slider = dynamic_cast<pe::Slider*>(pe::UI::getMenu("colors")->getComponent("c_red_slider").get());
+    slider->setValue(_selectedColor->r / 255.f);
+
+    slider = dynamic_cast<pe::Slider*>(pe::UI::getMenu("colors")->getComponent("c_green_slider").get());
+    slider->setValue(_selectedColor->g / 255.f);
+
+    slider = dynamic_cast<pe::Slider*>(pe::UI::getMenu("colors")->getComponent("c_blue_slider").get());
+    slider->setValue(_selectedColor->b / 255.f);
+
+    slider = dynamic_cast<pe::Slider*>(pe::UI::getMenu("colors")->getComponent("c_alpha_slider").get());
+    slider->setValue(_selectedColor->a / 255.f);
 }
 
 void UIHandlerImpl::saveImage(std::string path) {

@@ -6,6 +6,7 @@
 
 #include "../../PennyEngine/ui/components/ButtonListener.h"
 #include "../../PennyEngine/ui/components/SliderListener.h"
+#include "Settings.h"
 
 class UIHandlerImpl : public pe::ButtonListener, public pe::SliderListener {
 public:
@@ -15,6 +16,10 @@ protected:
     virtual void sliderMoved(std::string sliderId, float value);
 private:
     void saveImage(std::string path);
+
+    void setColorSliders();
+
+    sf::Color* _selectedColor = &Settings::bgColor;
 };
 
 class UIHandler {

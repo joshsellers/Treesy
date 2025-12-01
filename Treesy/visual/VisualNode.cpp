@@ -92,7 +92,7 @@ void VisualNode::connectToParent(sf::RenderTexture& surface) {
             const Line line(
                 { _parent->getPosition().x + _parent->getBounds().width / 2.f, _parent->getPosition().y + _parent->getBounds().height },
                 { getPosition().x + getBounds().width / 2.f, getPosition().y },
-                4.f
+                4.f, Settings::lineColor
             );
             surface.draw(line);
         }
@@ -204,6 +204,8 @@ void VisualNode::draw(sf::RenderTexture& surface) {
         const float subsVertSpacing = pe::UI::percentToScreenHeight(0.75f);
         const float subsHoriSpacing = pe::UI::percentToScreenWidth(0.2f);
 
+        _subscript.setFillColor(Settings::nonTermColor);
+
         _subscript.setPosition(
             _fieldText.getPosition().x + _fieldText.getGlobalBounds().width / 2.f + subsHoriSpacing, 
             (_fieldText.getPosition().y - _fieldText.getGlobalBounds().height / 2.f) + subsVertSpacing
@@ -313,7 +315,7 @@ void VisualNode::drawMovementLine(sf::RenderTexture& surface) {
         sf::Vector2f a = bez(t0);
         sf::Vector2f b = bez(t1);
 
-        lines.emplace_back(a, b, 4.f, sf::Color::Black);
+        lines.emplace_back(a, b, 4.f, Settings::lineColor);
     }
 
     for (const auto& line : lines) {
@@ -341,7 +343,7 @@ void VisualNode::drawMovementLine(sf::RenderTexture& surface) {
         arrowVertices[i].y = originalVertices.x * std::sin(angle) + originalVertices.y * std::cos(angle);
         arrow.setPoint(i, arrowVertices[i] + p1);
     }
-    arrow.setFillColor(sf::Color::Black);
+    arrow.setFillColor(Settings::lineColor);
 
     surface.draw(arrow);
 }

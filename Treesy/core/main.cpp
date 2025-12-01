@@ -6,7 +6,7 @@
 #include "../../PennyEngine/PennyEngine.h"
 #include "ProgramManager.h"
 
-int main() {
+int main(int argc, char* argv[]) {
     PennyEngine::setAppName("Treesy");
     PennyEngine::setWindowTitle(PennyEngine::getAppName());
     PennyEngine::setFont("res/font.ttf");
