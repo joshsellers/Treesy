@@ -106,15 +106,15 @@ void VisualNode::connectToParent(sf::RenderTexture& surface) {
         const sf::Vector2f rightCorner = { getPosition().x + getBounds().width, getPosition().y };
 
         const Line toLeft(
-            parentBottom, leftCorner, 4.f
+            parentBottom, leftCorner, 4.f, Settings::lineColor
         );
 
         const Line toRight(
-            parentBottom, rightCorner, 4.f
+            parentBottom, rightCorner, 4.f, Settings::lineColor
         );
 
         const Line leftToRight(
-            leftCorner, rightCorner, 4.f
+            leftCorner, rightCorner, 4.f, Settings::lineColor
         );
 
         surface.draw(toLeft);
