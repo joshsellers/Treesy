@@ -76,7 +76,9 @@ sf::Vector2f VisualNode::getPosition() const {
 
 
 void VisualNode::addChild(bool left) {
-    if (!hasChildren() && hasParent() && !_drawTriangle && getParent()->getChildren().size() == 1) move({ 0, pe::UI::percentToScreenHeight(Settings::getTermDistance()) });
+    if (!Settings::showTermLines && !hasChildren() && hasParent() && !_drawTriangle && getParent()->getChildren().size() == 1) 
+        move({ 0, pe::UI::percentToScreenHeight(Settings::getTermDistance()) });
+
     const auto& child = VisualTree::addChild(this);
 
     if (left) {
@@ -155,12 +157,12 @@ void VisualNode::update() {
     if (hasParent()) {
         const float dist = getPosition().y - _parent->getPosition().y;
         if (dist <= pe::UI::percentToScreenHeight(Settings::nontermVerticalDistance)) {
-            if (hasChildren() || getParent()->getChildren().size() > 1 || hasSubscript() || _drawTriangle) {
-                move({ 0, pe::UI::percentToScreenHeight(Settings::getTermDistance()) });
+            if (hasChildren() || getParent()->getChildren().size() > 1 || hasSubscript() || _drawTriangle || Settings::showTermLines) {
+                move({ 0, pe::UI::percentToScreenHeight(Settings::termVerticalDistance) });
             }
-        } else if (dist >= pe::UI::percentToScreenHeight(Settings::nontermVerticalDistance)) {
+        } else if (dist >= pe::UI::percentToScreenHeight(Settings::nontermVerticalDistance) && !Settings::showTermLines) {
             if (!hasChildren() && getParent()->getChildren().size() == 1 && !hasSubscript() && !_drawTriangle) {
-                move({ 0, -pe::UI::percentToScreenHeight(Settings::getTermDistance()) });
+                move({ 0, -pe::UI::percentToScreenHeight(Settings::termVerticalDistance) });
             }
         }
     }
