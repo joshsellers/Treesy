@@ -5,8 +5,11 @@
 
 #include "../../PennyEngine/PennyEngine.h"
 #include "ProgramManager.h"
+#include "Settings.h"
 
 int main(int argc, char* argv[]) {
+    Settings::load();
+
     PennyEngine::setAppName("Treesy");
     PennyEngine::setWindowTitle(PennyEngine::getAppName());
     PennyEngine::setFont("res/font.ttf");

@@ -51,7 +51,7 @@ void UIHandlerImpl::init() {
     auto settingsMenu = pe::UI::addMenu("settings");
     settingsMenu->addComponent(new_s_p(pe::Slider, ("widthSlider", 7, 53.f, { 8, 1.f }, { 1.f, 2.f }, "Horizontal Spacing", this)));
     pe::Slider* horzslider = dynamic_cast<pe::Slider*>(settingsMenu->getComponent("widthSlider").get());
-    //horzslider->setValue(0.f);
+    horzslider->setValue(Settings::horzSpacing / 500.f + 0.5f);
     horzslider->getText().setCharacterSize(pe::UI::percentToScreenWidth(1.f));
 
     //settingsMenu->addComponent(new_s_p(pe::Slider, ("heightSlider", 0, 0, { 8.f, 1.f }, { 1.f, 2.f }, "Vertical Spacing", this))); 
@@ -60,6 +60,9 @@ void UIHandlerImpl::init() {
     //vertslider->getText().setCharacterSize(pe::UI::percentToScreenWidth(1.f));
 
     settingsMenu->addComponent(new_s_p(pe::ToggleButton, ("termLines", 0, 0, 0.6f, 0.35f, "Terminal Lines: ", this)));
+    pe::ToggleButton* termLinesButton = dynamic_cast<pe::ToggleButton*>(settingsMenu->getComponent("termLines").get());
+    termLinesButton->setValue(Settings::showTermLines);
+
     settingsMenu->addComponent(new_s_p(pe::Button, ("open_colors", 0, 0, 8, 3, "Colors", this)));
     settingsMenu->addComponent(new_s_p(pe::Button, ("close_settings", 0, 0, 8, 3, "Close", this)));
 

@@ -5,6 +5,7 @@
 #define _SETTINGS_H
 
 #include <SFML/Graphics/Color.hpp>
+#include "../../PennyEngine/core/Logger.h"
 
 class Settings {
 public:
@@ -26,6 +27,41 @@ public:
     static inline bool enableTriangles = true;
 
     static inline float horzSpacing = 0.f;
+
+    static void save() {
+        std::ofstream out("settings.ini");
+        try {
+            out << "bgColor=" << std::to_string(bgColor.toInteger()) << std::endl;
+            out << "lineColor=" << std::to_string(lineColor.toInteger()) << std::endl;
+            out << "nonTermColor=" << std::to_string(nonTermColor.toInteger()) << std::endl;
+            out << "termColor=" << std::to_string(termColor.toInteger()) << std::endl;
+            out << "showTermLines=" << std::to_string(showTermLines) << std::endl;
+            out << "horzSpacing=" << std::to_string(horzSpacing) << std::endl;
+        } catch (std::exception ex) {
+            pe::Logger::log(ex.what());
+        }
+        out.close();
+    }
+
+    static void load() {
+        std::ifstream in("settings.ini");
+        if (in.good()) {
+            std::string line;
+            while (getline(in, line)) {
+                std::vector<std::string> parsedLine = pe::splitString(line, "=");
+                if (parsedLine[0] == "bgColor") bgColor = sf::Color(std::stoul(parsedLine[1]));
+                else if (parsedLine[0] == "lineColor") lineColor = sf::Color(std::stoul(parsedLine[1]));
+                else if (parsedLine[0] == "nonTermColor") nonTermColor = sf::Color(std::stoul(parsedLine[1]));
+                else if (parsedLine[0] == "termColor") termColor = sf::Color(std::stoul(parsedLine[1]));
+                else if (parsedLine[0] == "showTermLines") showTermLines = parsedLine[1] == "1";
+                else if (parsedLine[0] == "horzSpacing") horzSpacing = std::stof(parsedLine[1]);
+            }
+        } else {
+            pe::Logger::log("Did not find settings.ini");
+        }
+
+        in.close();
+    }
 private:
 };
 

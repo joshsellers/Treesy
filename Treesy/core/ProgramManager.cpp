@@ -50,6 +50,7 @@ void ProgramManager::drawUI(sf::RenderTexture& surface) {
 }
 
 void ProgramManager::onShutdown() {
+    Settings::save();
 }
 
 void ProgramManager::buttonPressed(std::string buttonId) {
