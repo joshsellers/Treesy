@@ -7,6 +7,7 @@
 #include "../visual/VisualTree.h"
 #include <fstream>
 #include <iostream>
+#include "Versioning.h"
 
 static void write(std::ofstream& out, std::string output) {
     output += "\n";
@@ -16,11 +17,14 @@ static void write(std::ofstream& out, std::string output) {
 void PersistenceImpl::save(std::string path) {
     std::ofstream out(path, std::ios::binary);
 
+    write(out, "VERSION:" + VERSION);
+
     const auto& nodes = VisualTree::getNodes();
     for (const auto& node : nodes) {
         write(out, "{");
         write(out, "id: " + node->getIdentifier());
-        write(out, "pos: " + std::to_string(node->getPosition().x) + ", " + std::to_string(node->getPosition().y));
+        const auto& res = PennyEngine::getRenderResolution();
+        write(out, "pos: " + std::to_string(node->getPosition().x / res.width * 100.f) + ", " + std::to_string(node->getPosition().y / res.height * 100.f));
         if (node->hasParent()) write(out, "parent: " + node->getParent()->getIdentifier());
         if (node->hasChildren()) {
             out << "children: ";
@@ -53,13 +57,15 @@ void PersistenceImpl::load(std::string path, bool convert) {
             input.assign(std::istreambuf_iterator<char>(in), std::istreambuf_iterator<char>());
             std::vector<std::string> lines = pe::splitString(input, "\n");
 
+            bool foundVersion = false;
             bool readingNode = false;
             std::vector<std::string> nodeLines;
             for (std::string line : lines) {
                 if (!readingNode && line == "{") readingNode = true;
+                else if (!readingNode && pe::stringStartsWith(line, "VERSION:")) foundVersion = true;
                 else if (readingNode && line == "}") {
                     readingNode = false;
-                    createNode(nodeLines);
+                    createNode(nodeLines, !foundVersion);
                     nodeLines.clear();
                 } else if (readingNode) nodeLines.push_back(line);
             }
@@ -115,7 +121,7 @@ void PersistenceImpl::load(std::string path, bool convert) {
     }
 }
 
-void PersistenceImpl::createNode(std::vector<std::string> lines) {
+void PersistenceImpl::createNode(std::vector<std::string> lines, bool convertCoordinates) {
     std::string id = "";
     sf::Vector2f pos;
     std::string parent = "";
@@ -151,9 +157,11 @@ void PersistenceImpl::createNode(std::vector<std::string> lines) {
     pe::replaceAll(fieldText, "\"", "");
     pe::replaceAll(subscript, "\"", "");
 
-    const auto& res = PennyEngine::getRenderResolution();
-    pos.x = pos.x / res.width * 100.f;
-    pos.y = pos.y / res.height * 100.f;
+    if (convertCoordinates) {
+        const auto& res = PennyEngine::getRenderResolution();
+        pos.x = pos.x / res.width * 100.f;
+        pos.y = pos.y / res.height * 100.f;
+    }
 
     s_p<VisualNode> parentNode = nullptr;
     if (parent != "") parentNode = findNode(parent);

@@ -18,7 +18,7 @@ private:
     std::vector<std::string> tokenize(std::string inScript);
     std::vector<std::string> splitOperators(std::string bareToken);
 
-    void createNode(std::vector<std::string> lines);
+    void createNode(std::vector<std::string> lines, bool convertCoordinates);
     s_p<VisualNode> findNode(const std::string id);
 
     std::vector<std::pair<std::string, std::vector<std::string>>> _children;
