@@ -29,7 +29,12 @@ public:
     static inline float horzSpacing = 0.f;
 
     static void save() {
-        std::ofstream out("settings.ini");
+        const std::string localLowPath = pe::getLocalLowPath() + "\\jsell\\Treesy\\";
+        if (!std::filesystem::is_directory(localLowPath)) {
+            std::filesystem::create_directories(localLowPath);
+        }
+        std::ofstream out(localLowPath + "settings.ini");
+
         try {
             out << "bgColor=" << std::to_string(bgColor.toInteger()) << std::endl;
             out << "lineColor=" << std::to_string(lineColor.toInteger()) << std::endl;
@@ -44,7 +49,7 @@ public:
     }
 
     static void load() {
-        std::ifstream in("settings.ini");
+        std::ifstream in(pe::getLocalLowPath() + "\\jsell\\Treesy\\settings.ini");
         if (in.good()) {
             std::string line;
             while (getline(in, line)) {
